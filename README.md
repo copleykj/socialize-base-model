@@ -1,14 +1,14 @@
-#Base Model#
+# Base Model #
 
 Provides an extensible base for which to other extensible models can be built.
 
-##Static Methods##
+## Static Methods ##
 
 **BaseModel.extend()** - Create and return a new Class which extends Basemodel and has all of it's properties and methods including this one.
 
 **BaseModel.createEmpty(id)** - Returns an instance with only the _id field set as the specified id *{_id:"8D7XmQb3KEpGqc3AD"}*. Handy for when you already have the _id of a record and want to do an update to the collection but don't want to do a full database call to get a populated instance.
 
-##Prototypal Methods##
+## Prototypal Methods ##
 
 **BaseModel.prototype.checkCollectionExists()** - Used by BaseModel to check if you have set the _collection property so it knows which collection to perform operations on.
 
@@ -20,7 +20,7 @@ Provides an extensible base for which to other extensible models can be built.
 
 **BaseModel.prototype.remove()** - Delete the database record for the instance
 
-##Examples##
+## Examples ##
 
 ```javascript
 var Dog = BaseModel.extend();
