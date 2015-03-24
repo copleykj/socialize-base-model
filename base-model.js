@@ -50,11 +50,11 @@ BaseModel.prototype.checkOwnership = function(){
 
 BaseModel.prototype.save = function() {
     this.checkCollectionExists();
-
+    var obj = _.extend({}, this);
     if(this._id){
-        this.collection.upsert(this._id, this);
+        this.collection.upsert(this._id, obj);
     }else{
-        this._id = this._collection.insert(this);
+        this._id = this._collection.insert(obj);
     }
 
     return this;
