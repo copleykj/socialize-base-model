@@ -34,7 +34,7 @@ BaseModel.extend = function() {
     child.prototype.constructor = child;
     child.prototype._parent_ = this;
     child.prototype._super_ = this.prototype;
-    
+
     return child;
 };
 
@@ -52,7 +52,7 @@ BaseModel.prototype.save = function() {
     this.checkCollectionExists();
 
     if(this._id){
-        this.collection.upsert(this._id, this);
+        this._collection.upsert(this._id, this);
     }else{
         this._id = this._collection.insert(this);
     }
@@ -75,4 +75,3 @@ BaseModel.prototype.remove = function(){
         this._collection.remove({_id:this._id});
     }
 };
-
