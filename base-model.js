@@ -52,7 +52,7 @@ BaseModel.prototype.save = function() {
     this.checkCollectionExists();
     var obj = _.extend({}, this);
     if(this._id){
-        this._collection.upsert(this._id, obj);
+        this._collection.update(this._id, {$set:obj});
     }else{
         this._id = this._collection.insert(obj);
     }
