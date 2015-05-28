@@ -26,7 +26,7 @@ BaseModel.createEmpty = function (_id) {
 };
 
 BaseModel.extend = function() {
-    var child = function (document) {
+    var child = function(document) {
         _.extend(this, document);
     };
     _.extend(child, this);
@@ -34,17 +34,37 @@ BaseModel.extend = function() {
     child.prototype.constructor = child;
     child.prototype._parent_ = this;
     child.prototype._super_ = this.prototype;
-    
+
     return child;
 };
 
-BaseModel.prototype.checkCollectionExists = function(){
+BaseModel.extendAndSetupCollection = function(collectionName) {
+    var model = this.extend();
+
+    model.collection = model.prototype._collection = new Mongo.Collection(collectionName, {
+        transform: function(document){
+            return new model(document);
+        }
+    });
+
+    Meteor[collectionName] = model.collection;
+
+    return model;
+};
+
+BaseModel.appendSchema = function(schemaObject) {
+    var schema = new SimpleSchema(schemaObject);
+
+    this.prototype._collection.attachSchema(schema);
+};
+
+BaseModel.prototype.checkCollectionExists = function() {
     if(!this._collection) {
         throw new Error("Please supply a collection for your model");
     }
 };
 
-BaseModel.prototype.checkOwnership = function(){
+BaseModel.prototype.checkOwnership = function() {
     return this.userId === Meteor.userId();
 };
 
@@ -52,7 +72,7 @@ BaseModel.prototype.save = function() {
     this.checkCollectionExists();
     var obj = {};
 
-    _.each(this, function (value, key) {
+    _.each(this, function(value, key) {
         obj[key] = value;
     });
 
@@ -73,11 +93,10 @@ BaseModel.prototype.update = function(modifier) {
     }
 };
 
-BaseModel.prototype.remove = function(){
+BaseModel.prototype.remove = function() {
     if(this._id){
         this.checkCollectionExists();
 
         this._collection.remove({_id:this._id});
     }
 };
-
