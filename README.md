@@ -4,7 +4,11 @@ Provides an extensible base for which to other extensible models can be built.
 
 ## Static Methods ##
 
-**BaseModel.extend()** - Create and return a new Class which extends Basemodel and has all of it's properties and methods including this one.
+**BaseModel.extend()** - Create and return a new Class which extends BaseModel and has all of it's properties and methods including static methods.
+
+**BaseModel.extendAndSetupCollection("collectionName")** - Extend BaseModel with `extend()` and then set up the collection for the model and assign it to `Meteor[collectonName]` for ease of access outside of package.
+
+**BaseModel.appendSchema(SchemaObject)** - Create or add to the schema for the model. `SchemaObject` is the same as you would pass to `new SimpleSchema(SchemaObject)`. This will throw an error if `Model.prototype._collection` hasn't been setup properly.
 
 **BaseModel.createEmpty(id)** - Returns an instance with only the _id field set as the specified id *{_id:"8D7XmQb3KEpGqc3AD"}*. Handy for when you already have the _id of a record and want to do an update to the collection but don't want to do a full database call to get a populated instance.
 
@@ -23,16 +27,21 @@ Provides an extensible base for which to other extensible models can be built.
 ## Examples ##
 
 ```javascript
-var Dog = BaseModel.extend();
+var Dog = BaseModel.extendAndSetupCollection("dogs");
 
-Dog._collection = DogsCollection = new Mongo.collection("dogs", {
-	transform:function (document) {
-    	return new Dog(document);
+Dog.appendSchema({
+    name:{
+        type:String,
+        max:25
+    },
+    breed:{
+        type:String,
+        optional:true
     }
 });
 
 Dog.prototype.wag = function() {
-	console.log(this.name + " wags tail");
+    console.log(this.name + " wags tail");
 }
 
 var rufus = new Dog({breed:"Beagle", name:"Rufus"}).save();
