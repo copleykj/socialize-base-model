@@ -54,13 +54,17 @@ BaseModel.extendAndSetupCollection = function(collectionName) {
 
 BaseModel.appendSchema = function(schemaObject) {
     var schema = new SimpleSchema(schemaObject);
-
-    this.prototype._collection.attachSchema(schema);
+    var collection = this.prototype._collection
+    if(collection){
+        collection.attachSchema(schema);
+    }else{
+        throw new Error("Can't append schema to non existent collection. Either use extendAndSetupCollection() or assign a collection to Model.prototype._collection");
+    }
 };
 
 BaseModel.prototype.checkCollectionExists = function() {
     if(!this._collection) {
-        throw new Error("Please supply a collection for your model");
+        throw new Error("No collection found. Either use extendAndSetupCollection() or assign a collection to Model.prototype._collection");
     }
 };
 
