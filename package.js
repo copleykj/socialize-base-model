@@ -1,7 +1,7 @@
 Package.describe({
     name: "socialize:base-model",
     summary: "A model for all other models to inherit from ",
-    version: "0.2.0",
+    version: "0.2.1",
 });
 
 Package.onUse(function(api) {
