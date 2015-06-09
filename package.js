@@ -21,7 +21,7 @@ Package.onUse(function(api) {
         "aldeed:collection2@2.3.3", "matb33:collection-hooks@0.7.13", "meteorhacks:unblock@1.1.0"
     ]);
 
-    api.addFiles("base-model.js");
+    api.addFiles(["base-model.js", "security.js"]);
 
     api.export("BaseModel");
 });
