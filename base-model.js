@@ -62,6 +62,21 @@ BaseModel.appendSchema = function(schemaObject) {
     }
 };
 
+BaseModel.methods = function(methodMap) {
+    var self = this;
+    if(_.isObject(methodMap)){
+        _.each(methodMap, function(method, name){
+            if(_.isFunction(method)){
+                if(!self.prototype[name]){
+                    self.prototype[name] = method;
+                }else{
+                    throw new Meteor.Error("existent-method", "The method "+name+" already exists.");
+                }
+            }
+        });
+    }
+};
+
 BaseModel.prototype.checkCollectionExists = function() {
     if(!this._collection) {
         throw new Error("No collection found. Either use extendAndSetupCollection() or assign a collection to Model.prototype._collection");
