@@ -54,7 +54,8 @@ BaseModel.extendAndSetupCollection = function(collectionName) {
 
 BaseModel.appendSchema = function(schemaObject) {
     var schema = new SimpleSchema(schemaObject);
-    var collection = this.prototype._collection
+    var collection = this.prototype._collection;
+
     if(collection){
         collection.attachSchema(schema);
     }else{
@@ -77,6 +78,10 @@ BaseModel.methods = function(methodMap) {
     }
 };
 
+BaseModel.prototype.getSchema = function() {
+    return this._collection._c2._simpleSchema;
+};
+
 BaseModel.prototype.checkCollectionExists = function() {
     if(!this._collection) {
         throw new Error("No collection found. Either use extendAndSetupCollection() or assign a collection to Model.prototype._collection");
@@ -87,18 +92,23 @@ BaseModel.prototype.checkOwnership = function() {
     return this.userId === Meteor.userId();
 };
 
-BaseModel.prototype.save = function() {
+BaseModel.prototype.save = function(callback) {
     this.checkCollectionExists();
     var obj = {};
+    var schema = this.getSchema();
 
     _.each(this, function(value, key) {
         obj[key] = value;
     });
 
+    if(Meteor.isClient && schema){
+        obj = schema.clean(obj);
+    }
+
     if(this._id){
-        this._collection.update(this._id, {$set:obj});
+        this._collection.update(this._id, {$set:obj}, callback);
     }else{
-        this._id = this._collection.insert(obj);
+        this._id = this._collection.insert(obj, callback);
     }
 
     return this;
