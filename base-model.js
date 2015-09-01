@@ -29,9 +29,15 @@ BaseModel.extend = function() {
     var child = function(document) {
         _.extend(this, document);
     };
+
+    //add Static properties and methods
     _.extend(child, this);
+
+    //prototypal inheritence
     child.prototype = Object.create(this.prototype);
     child.prototype.constructor = child;
+
+    //access to parent
     child.prototype._parent_ = this;
     child.prototype._super_ = this.prototype;
 
