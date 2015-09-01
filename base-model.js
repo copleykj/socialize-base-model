@@ -78,7 +78,7 @@ BaseModel.methods = function(methodMap) {
     }
 };
 
-BaseModel.prototype.getSchema = function() {
+BaseModel.prototype._getSchema = function() {
     return this._collection._c2._simpleSchema;
 };
 
@@ -95,7 +95,7 @@ BaseModel.prototype.checkOwnership = function() {
 BaseModel.prototype.save = function(callback) {
     this.checkCollectionExists();
     var obj = {};
-    var schema = this.getSchema();
+    var schema = this._getSchema();
 
     _.each(this, function(value, key) {
         obj[key] = value;
