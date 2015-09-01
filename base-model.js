@@ -82,7 +82,7 @@ BaseModel.prototype._getSchema = function() {
     return this._collection._c2._simpleSchema;
 };
 
-BaseModel.prototype.checkCollectionExists = function() {
+BaseModel.prototype._checkCollectionExists = function() {
     if(!this._collection) {
         throw new Error("No collection found. Either use extendAndSetupCollection() or assign a collection to Model.prototype._collection");
     }
@@ -93,7 +93,7 @@ BaseModel.prototype.checkOwnership = function() {
 };
 
 BaseModel.prototype.save = function(callback) {
-    this.checkCollectionExists();
+    this._checkCollectionExists();
     var obj = {};
     var schema = this._getSchema();
 
@@ -116,7 +116,7 @@ BaseModel.prototype.save = function(callback) {
 
 BaseModel.prototype.update = function(modifier) {
     if(this._id){
-        this.checkCollectionExists();
+        this._checkCollectionExists();
 
         this._collection.update(this._id, modifier);
     }
@@ -124,7 +124,7 @@ BaseModel.prototype.update = function(modifier) {
 
 BaseModel.prototype.remove = function() {
     if(this._id){
-        this.checkCollectionExists();
+        this._checkCollectionExists();
 
         this._collection.remove({_id:this._id});
     }
