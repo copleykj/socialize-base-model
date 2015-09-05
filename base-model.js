@@ -17,6 +17,17 @@ if (typeof Object.create != 'function') {
     })();
 }
 
+var diff = function(a,b) {
+    var keys = _.map(a, function(v, k){
+        if(b[k] === v){
+            return k;
+        }
+    });
+    return _.omit(a, keys);
+};
+
+
+
 /*globals BaseModel:true*/
 
 BaseModel = function(){};
@@ -28,6 +39,7 @@ BaseModel.createEmpty = function (_id) {
 BaseModel.extend = function() {
     var child = function(document) {
         _.extend(this, document);
+        this._document = document;
     };
 
     //add Static properties and methods
@@ -104,16 +116,20 @@ BaseModel.prototype.save = function(callback) {
     var schema = this._getSchema();
 
     _.each(this, function(value, key) {
-        obj[key] = value;
+        if(key !== "_document"){
+            obj[key] = value;
+        }
     });
 
-    if(Meteor.isClient && schema){
-        obj = schema.clean(obj);
-    }
 
     if(this._id){
+        obj = diff(obj, this._document);
+        console.log(obj);
         this._collection.update(this._id, {$set:obj}, callback);
     }else{
+        if(Meteor.isClient && schema){
+            obj = schema.clean(obj);
+        }
         this._id = this._collection.insert(obj, callback);
     }
 
@@ -126,6 +142,18 @@ BaseModel.prototype.update = function(modifier) {
 
         this._collection.update(this._id, modifier);
     }
+};
+
+BaseModel.prototype._updateLocal = function(modifier) {
+    this._collection._collection.update(this._id, modifier);
+};
+
+BaseModel.prototype.set = function(key, value) {
+    var obj = {};
+    obj[key] = value;
+    this[key] = value;
+    this._updateLocal({$set:obj});
+    return this;
 };
 
 BaseModel.prototype.remove = function() {
