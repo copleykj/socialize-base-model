@@ -157,7 +157,7 @@ BaseModel.prototype.set = function(key, value) {
     var obj = {};
     obj[key] = value;
     this[key] = value;
-    this._updateLocal({$set:obj});
+    this._id && this._updateLocal({$set:obj});
     return this;
 };
 
