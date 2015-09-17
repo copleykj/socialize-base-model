@@ -56,14 +56,17 @@ BaseModel.extend = function() {
     return child;
 };
 
-BaseModel.extendAndSetupCollection = function(collectionName) {
+BaseModel.extendAndSetupCollection = function(collectionName, noTransform) {
+    var options = {};
     var model = this.extend();
 
-    model.collection = model.prototype._collection = new Mongo.Collection(collectionName, {
-        transform: function(document){
+    if(!noTransform){
+        options.transform = function(document){
             return new model(document);
-        }
-    });
+        };
+    }
+
+    model.collection = model.prototype._collection = new Mongo.Collection(collectionName, options);
 
     Meteor[collectionName] = model.collection;
 
