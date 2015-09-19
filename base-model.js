@@ -100,7 +100,13 @@ BaseModel.methods = function(methodMap) {
 };
 
 BaseModel.prototype._getSchema = function() {
-    return this._collection._c2._simpleSchema;
+    var schema = Meteor._get(this, "_collection", "_c2", "_simpleSchema");
+    if(schema){
+        return schema;
+    }else{
+        throw new Meteor.Error("noSchema", "You don't have a schema defined for " + this.getCollectionName());
+    }
+
 };
 
 BaseModel.prototype._checkCollectionExists = function() {
