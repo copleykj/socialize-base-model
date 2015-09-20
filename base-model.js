@@ -129,8 +129,10 @@ BaseModel.prototype.save = function(callback) {
 
     if(this._id){
         obj = diff(obj, this._document);
-        console.log(obj);
-        this._collection.update(this._id, {$set:obj}, callback);
+        if(!_.isEmpty(obj))
+            this._collection.update(this._id, {$set:obj}, callback);
+        else
+            Meteor.setTimeout(function() { callback && callback(null, null); }, 0);
     }else{
         if(Meteor.isClient && schema){
             obj = schema.clean(obj);
