@@ -137,8 +137,8 @@ BaseModel.prototype.save = function(callback) {
 
 
     if(this._id){
+        //diff and update
         obj = diff(obj, this._document);
-        console.log(obj);
         this._collection.update(this._id, {$set:obj}, callback);
     }else{
         if(Meteor.isClient && schema){
@@ -158,15 +158,57 @@ BaseModel.prototype.update = function(modifier) {
     }
 };
 
+BaseModel.prototype._setProps = function(key, value, validationPathOnly) {
+    var current;
+    var level = this;
+    var steps = key.split(".");
+    var last = steps.pop();
+    var set = {};
+    var currentSet = set;
+
+    while(current = steps.shift()){
+        if(!validationPathOnly){
+            if(level[current]){
+                if(!_.isObject(level[current])){
+                   throw new Meteor.Error("PropertyNotObject", current + " of " + key + " is not an object");
+                }
+            }else{
+                level[current] = {};
+            }
+
+            level = level[current];
+        }
+        currentSet = currentSet[current] = {};
+    }
+
+    if(!validationPathOnly) { level[last] = value; }
+
+    currentSet[last] = value;
+
+    return set;
+};
+
+
 BaseModel.prototype._updateLocal = function(modifier) {
     this._collection._collection.update(this._id, modifier);
 };
 
 BaseModel.prototype.set = function(key, value) {
+    var context = this._getSchema().newContext();
     var obj = {};
-    obj[key] = value;
-    this[key] = value;
-    this._id && this._updateLocal({$set:obj});
+
+    obj.$set = this._setProps(key, value, true);
+
+    if(context.validate(obj, {modifier:true})){
+        obj.$set = this._setProps(key, value);
+        this[key] = value;
+
+        if(Meteor.isClient){
+            this._id && this._updateLocal(obj);
+        }
+    }else{
+        throw new Meteor.Error(context.keyErrorMessage(key));
+    }
     return this;
 };
 
