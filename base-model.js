@@ -1,4 +1,4 @@
-//Object.create shim
+
 if (typeof Object.create !== 'function') {
   Object.create = (function () {
     var thing = function () {};
@@ -78,6 +78,7 @@ BaseModel.appendSchema = function (schemaObject) {
 
   if (collection) {
     collection.attachSchema(schema);
+    this.prototype._validator = schema.newContext();
   } else {
     throw new Error(
       "Can't append schema to non existent collection. Either use extendAndSetupCollection() or assign a collection to Model.prototype._collection"
@@ -180,3 +181,24 @@ BaseModel.prototype.remove = function () {
     });
   }
 };
+
+// ===============================================
+
+BaseModel.prototype.clean = function () {
+  if(this._collection._c2._simpleSchema){
+    return this._collection._c2._simpleSchema.clean(this._document);
+  }
+};
+
+BaseModel.prototype.validate = function (options) {
+  var validator = this.prototype._validator;
+
+  if (validator) {
+    validator.validate(this, options)
+  } else {
+    throw new Error(
+      "Can't validate document when object doesn't have a schema and validation context. Use .appendSchema()")    
+      );
+  }
+};
+
