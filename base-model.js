@@ -122,6 +122,9 @@ BaseModel.prototype.checkOwnership = function () {
   return this.userId === Meteor.userId();
 };
 
+// ===============================================
+// crud/persistence functions
+
 BaseModel.prototype.save = function (callback) {
   this._checkCollectionExists();
   var obj = {};
@@ -183,6 +186,7 @@ BaseModel.prototype.remove = function () {
 };
 
 // ===============================================
+// validation functions
 
 BaseModel.prototype.clean = function () {
   if(this._collection._c2._simpleSchema){
