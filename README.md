@@ -20,27 +20,27 @@ Now for security we need to set up the schema for the collection. BaseModel prov
 
 ```javascript
 Book.appendSchema({
-	"userId":{
-		type: String,
-		regEx: SimpleSchema.RegEx.Id,
-		autoValue: function() {
-			if(this.isInsert){
-				return this.userId;
-			}
-		}
-	},
-	"title":{
-		type: String
-		max: 30,
-	},
-	"subTitle":{
-		type: String,
-		max: 100
-	},
-	"authorId":{
-		type: String,
-		regEx: SimpleSchema.RegEx.Id
-	}
+  "userId":{
+    type: String,
+    regEx: SimpleSchema.RegEx.Id,
+    autoValue: function() {
+      if(this.isInsert){
+        return this.userId;
+      }
+    }
+  },
+  "title":{
+    type: String
+    max: 30,
+  },
+  "subTitle":{
+    type: String,
+    max: 100
+  },
+  "authorId":{
+    type: String,
+    regEx: SimpleSchema.RegEx.Id
+  }
 });
 ```
 
