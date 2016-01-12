@@ -48,18 +48,18 @@ And to finalize the write security we will use some light checking in allow or d
 
 ```javascript
 Meteor.books.allow({
-	insert: function(userId, book){
-		//book is an instance of Book class thanks to collection transforms.
-		return book.checkOwnership() && !!Meteor.authors.findOne(this.authorId);
-	},
-	update: function(userId, book){
-		//book is an instance of Book class thanks to collection transforms.
-		return book.checkOwnership();
-	},
-	remove: function(userId, book) {
-		//book is an instance of Book class thanks to collection transforms.
-		return book.checkOwnership()
-	}
+  insert: function(userId, book){
+    //book is an instance of Book class thanks to collection transforms.
+    return book.checkOwnership() && !!Meteor.authors.findOne(this.authorId);
+  },
+  update: function(userId, book){
+    //book is an instance of Book class thanks to collection transforms.
+    return book.checkOwnership();
+  },
+  remove: function(userId, book) {
+    //book is an instance of Book class thanks to collection transforms.
+    return book.checkOwnership()
+  }
 });
 ```
  
@@ -67,29 +67,30 @@ Now that we have a `Book` class with a [SimpleSchema][1] attached to it's collec
 
 ```javascript
 Book.methods({
-	"owner": function(){
-		return Meteor.users.findOne(this.userId);
-	},
-	"author": function() {
-		//return an instance of Author that itself has methods
-		return Meteor.authors.findOne(this.authorId);
-	},
-	"fullTitle": function() {
-		return this.title + ": " + this.subTitle;
-	}
+  "owner": function(){
+    return Meteor.users.findOne(this.userId);
+  },
+  "author": function() {
+    //return an instance of Author that itself has methods
+    return Meteor.authors.findOne(this.authorId);
+  },
+  "fullTitle": function() {
+    return this.title + ": " + this.subTitle;
+  }
 });
 ```
+
 Now we are all set up to use the new `Book` class, and since we've properly secured our database writes through a cobination of [SimpleSchema][1] and allow rules, we can now do all of our database operations using client side database methods.
 
 Lets Insert a book
 
 ```javascript
-var author = Meteor.authors.findOne({firstName:"Dave", lastName:"Pilkey"});
+var author = Meteor.authors.findOne({firstName:"Florence", lastName:"Nightingale"});
 
 var book = new Book({
-	title: "Captain Underpants",
-	subTitle: "and The Sensational Saga of Sir-Stinks-A-Lot",
-	authorId: author._id
+  title: "Notes on Nursing",
+  subTitle: "What It Is, and What It Is Not",
+  authorId: author._id
 });
 
 book.save();
@@ -98,11 +99,11 @@ book.save();
 Now, assuming we have a template with a helper that returns a cursor from `Meteor.books`, we can now use the methods of the `Book` class as template helpers as well.
 
 ```html
-	<h1>Book List</h1>
-	{{#each books}}
-		<p>{{author.fullName}}<p>
-		<p>{{fullTitle}}</p>
-	{{/each}}
+<h1>Book List</h1>
+{{#each books}}
+  <p>{{author.fullName}}<p>
+  <p>{{fullTitle}}</p>
+{{/each}}
 ```
 ---
 
@@ -117,7 +118,7 @@ Instance methods are helper functions available on the instances returned from `
 ```javascript
 var myBook = Meteor.books.findOne();
 if(myBook.checkOwnership()){
-	mybook.remove();
+  mybook.remove();
 }
 ```
 
@@ -128,7 +129,7 @@ _**If using this in a reactive context such as the data context of a template an
 ```javascript
 var book = Meteor.books.findOne();
 
-book.set("title", "Diary of a Wimpy Kid");
+book.set("title", "Gray's Anatomy");
 ```
 
 **save** - Save instance to the database. If the instance was not previously saved to the database this will perform an insert. Otherwise it will diff the changes and update the database using a $set and update.
@@ -136,7 +137,7 @@ book.set("title", "Diary of a Wimpy Kid");
 ```javascript
 var book = Meteor.books.findOne();
 
-book.set("title", "To Kill a Mockingbird");
+book.set("title", "Hippocratic Writings");
 
 book.save();
 ```
@@ -144,7 +145,7 @@ book.save();
 **update(modifier)** - Update the record for the instance making changes specified by the modifier. In most cases it'll be easier to use `save` but this is here if needed.
 
 ```javascript
-Meteor.books.findOne().update({$set:{title:"Meteor For Dummies"}});
+Meteor.books.findOne().update({$set:{title:"Germ Theory and Its Applications to Medicine"}});
 ```
 
 **remove** - Delete the database record for the instance.
