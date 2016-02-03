@@ -19,7 +19,7 @@ Package.onUse(function (api) {
       "lepozepo:publish-with-relations@1.2.4",
       "aldeed:simple-schema@1.5.3",
       "aldeed:collection2@2.8.0",
-      "matb33:collection-hooks@0.8.1"
+      "artpolikarpov:collection-hooks@0.8.5"
     ]);
 
   api.imply(["meteor", "mongo", "underscore"]);
@@ -28,7 +28,7 @@ Package.onUse(function (api) {
       "lepozepo:publish-with-relations@1.2.4",
       "aldeed:simple-schema@1.5.3",
       "aldeed:collection2@2.8.0",
-      "matb33:collection-hooks@0.8.1"
+      "artpolikarpov:collection-hooks@0.8.5"
     ]);
 
   api.addFiles(["base-model.js", "security.js"]);
