@@ -8,7 +8,7 @@ BaseModel is the foundation on which the Socialize package set is built. It prov
 
 ## Usage ##
 
-Assuming we need to model books, we create the model like so. 
+Assuming we need to model books, we create the model like so.
 
 ```javascript
 Book = BaseModel.extendAndSetupCollection("books");
@@ -62,7 +62,7 @@ Meteor.books.allow({
   }
 });
 ```
- 
+
 Now that we have a `Book` class with a [SimpleSchema][1] attached to it's collection and allow rules in place, we can give it some helper methods that let us access it's data and reference related models.
 
 ```javascript
@@ -85,11 +85,11 @@ Now we are all set up to use the new `Book` class, and since we've properly secu
 Lets Insert a book
 
 ```javascript
-var author = Meteor.authors.findOne({firstName:"Florence", lastName:"Nightingale"});
+var author = Meteor.authors.findOne({firstName:"Dave", lastName:"Pilkey"});
 
 var book = new Book({
-  title: "Notes on Nursing",
-  subTitle: "What It Is, and What It Is Not",
+  title: "Captain Underpants",
+  subTitle: "and The Sensational Saga of Sir-Stinks-A-Lot",
   authorId: author._id
 });
 
@@ -122,7 +122,7 @@ if(myBook.checkOwnership()){
 }
 ```
 
-**set** - update a property of the underlying data. This also updates the underlying minimongo collection if a record exists, and will reflect the change on the page if displayed there. This however does not save the data to the server side database. To save to server call the `save` method on the instance. 
+**set** - update a property of the underlying data. This also updates the underlying minimongo collection if a record exists, and will reflect the change on the page if displayed there. This however does not save the data to the server side database. To save to server call the `save` method on the instance.
 
 _**If using this in a reactive context such as the data context of a template and modifying in an event attached to that template, you will need to save a copy to the template and modify that as modifying the underlying minimongo will cause a recomputation and wipe out any changes to the instance that was the data context**_
 
@@ -137,7 +137,7 @@ book.set("title", "Gray's Anatomy");
 ```javascript
 var book = Meteor.books.findOne();
 
-book.set("title", "Hippocratic Writings");
+book.set("title", "To Kill a Mockingbird");
 
 book.save();
 ```
@@ -145,7 +145,7 @@ book.save();
 **update(modifier)** - Update the record for the instance making changes specified by the modifier. In most cases it'll be easier to use `save` but this is here if needed.
 
 ```javascript
-Meteor.books.findOne().update({$set:{title:"Germ Theory and Its Applications to Medicine"}});
+Meteor.books.findOne().update({$set:{title:"Meteor For Dummies"}});
 ```
 
 **remove** - Delete the database record for the instance.
