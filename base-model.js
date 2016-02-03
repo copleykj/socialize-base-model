@@ -201,8 +201,7 @@ BaseModel.prototype.validate = function (options) {
     validator.validate(this, options)
   } else {
     throw new Error(
-      "Can't validate document when object doesn't have a schema and validation context. Use .appendSchema()")    
+      "Can't validate document when object doesn't have a schema and validation context. Use .appendSchema()"
       );
   }
 };
-
