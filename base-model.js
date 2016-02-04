@@ -26,6 +26,14 @@ var diff = function(a,b) {
     return _.omit(a, keys);
 };
 
+var extend = function(reciever, provider) {
+    for(prop in provider){
+        if(provider.hasOwnProperty(prop)){
+            reciever[prop] = provider[prop];
+        }
+    }
+}
+
 
 
 /*globals BaseModel:true*/
@@ -38,12 +46,12 @@ BaseModel.createEmpty = function (_id) {
 
 BaseModel.extend = function() {
     var child = function(document) {
-        _.extend(this, document);
+        extend(this, document);
         this._document = document;
     };
 
     //add Static properties and methods
-    _.extend(child, this);
+    extend(child, this);
 
     //prototypal inheritence
     child.prototype = Object.create(this.prototype);
