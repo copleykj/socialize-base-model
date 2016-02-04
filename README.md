@@ -8,7 +8,7 @@ BaseModel is the foundation on which the Socialize package set is built. It prov
 
 ## Usage ##
 
-Assuming we need to model books, we create the model like so. 
+Assuming we need to model books, we create the model like so.
 
 ```javascript
 Book = BaseModel.extendAndSetupCollection("books");
@@ -20,27 +20,27 @@ Now for security we need to set up the schema for the collection. BaseModel prov
 
 ```javascript
 Book.appendSchema({
-	"userId":{
-		type: String,
-		regEx: SimpleSchema.RegEx.Id,
-		autoValue: function() {
-			if(this.isInsert){
-				return this.userId;
-			}
-		}
-	},
-	"title":{
-		type: String
-		max: 30,
-	},
-	"subTitle":{
-		type: String,
-		max: 100
-	},
-	"authorId":{
-		type: String,
-		regEx: SimpleSchema.RegEx.Id
-	}
+  "userId":{
+    type: String,
+    regEx: SimpleSchema.RegEx.Id,
+    autoValue: function() {
+      if(this.isInsert){
+        return this.userId;
+      }
+    }
+  },
+  "title":{
+    type: String
+    max: 30,
+  },
+  "subTitle":{
+    type: String,
+    max: 100
+  },
+  "authorId":{
+    type: String,
+    regEx: SimpleSchema.RegEx.Id
+  }
 });
 ```
 
@@ -48,37 +48,38 @@ And to finalize the write security we will use some light checking in allow or d
 
 ```javascript
 Meteor.books.allow({
-	insert: function(userId, book){
-		//book is an instance of Book class thanks to collection transforms.
-		return book.checkOwnership() && !!Meteor.authors.findOne(this.authorId);
-	},
-	update: function(userId, book){
-		//book is an instance of Book class thanks to collection transforms.
-		return book.checkOwnership();
-	},
-	remove: function(userId, book) {
-		//book is an instance of Book class thanks to collection transforms.
-		return book.checkOwnership()
-	}
+  insert: function(userId, book){
+    //book is an instance of Book class thanks to collection transforms.
+    return book.checkOwnership() && !!Meteor.authors.findOne(this.authorId);
+  },
+  update: function(userId, book){
+    //book is an instance of Book class thanks to collection transforms.
+    return book.checkOwnership();
+  },
+  remove: function(userId, book) {
+    //book is an instance of Book class thanks to collection transforms.
+    return book.checkOwnership()
+  }
 });
 ```
- 
+
 Now that we have a `Book` class with a [SimpleSchema][1] attached to it's collection and allow rules in place, we can give it some helper methods that let us access it's data and reference related models.
 
 ```javascript
 Book.methods({
-	"owner": function(){
-		return Meteor.users.findOne(this.userId);
-	},
-	"author": function() {
-		//return an instance of Author that itself has methods
-		return Meteor.authors.findOne(this.authorId);
-	},
-	"fullTitle": function() {
-		return this.title + ": " + this.subTitle;
-	}
+  "owner": function(){
+    return Meteor.users.findOne(this.userId);
+  },
+  "author": function() {
+    //return an instance of Author that itself has methods
+    return Meteor.authors.findOne(this.authorId);
+  },
+  "fullTitle": function() {
+    return this.title + ": " + this.subTitle;
+  }
 });
 ```
+
 Now we are all set up to use the new `Book` class, and since we've properly secured our database writes through a cobination of [SimpleSchema][1] and allow rules, we can now do all of our database operations using client side database methods.
 
 Lets Insert a book
@@ -87,9 +88,9 @@ Lets Insert a book
 var author = Meteor.authors.findOne({firstName:"Dave", lastName:"Pilkey"});
 
 var book = new Book({
-	title: "Captain Underpants",
-	subTitle: "and The Sensational Saga of Sir-Stinks-A-Lot",
-	authorId: author._id
+  title: "Captain Underpants",
+  subTitle: "and The Sensational Saga of Sir-Stinks-A-Lot",
+  authorId: author._id
 });
 
 book.save();
@@ -98,11 +99,11 @@ book.save();
 Now, assuming we have a template with a helper that returns a cursor from `Meteor.books`, we can now use the methods of the `Book` class as template helpers as well.
 
 ```html
-	<h1>Book List</h1>
-	{{#each books}}
-		<p>{{author.fullName}}<p>
-		<p>{{fullTitle}}</p>
-	{{/each}}
+<h1>Book List</h1>
+{{#each books}}
+  <p>{{author.fullName}}<p>
+  <p>{{fullTitle}}</p>
+{{/each}}
 ```
 ---
 
@@ -117,18 +118,18 @@ Instance methods are helper functions available on the instances returned from `
 ```javascript
 var myBook = Meteor.books.findOne();
 if(myBook.checkOwnership()){
-	mybook.remove();
+  mybook.remove();
 }
 ```
 
-**set** - update a property of the underlying data. This also updates the underlying minimongo collection if a record exists, and will reflect the change on the page if displayed there. This however does not save the data to the server side database. To save to server call the `save` method on the instance. 
+**set** - update a property of the underlying data. This also updates the underlying minimongo collection if a record exists, and will reflect the change on the page if displayed there. This however does not save the data to the server side database. To save to server call the `save` method on the instance.
 
 _**If using this in a reactive context such as the data context of a template and modifying in an event attached to that template, you will need to save a copy to the template and modify that as modifying the underlying minimongo will cause a recomputation and wipe out any changes to the instance that was the data context**_
 
 ```javascript
 var book = Meteor.books.findOne();
 
-book.set("title", "Diary of a Wimpy Kid");
+book.set("title", "Gray's Anatomy");
 ```
 
 **save** - Save instance to the database. If the instance was not previously saved to the database this will perform an insert. Otherwise it will diff the changes and update the database using a $set and update.

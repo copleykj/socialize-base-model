@@ -1,29 +1,37 @@
 Package.describe({
-    name: "socialize:base-model",
-    summary: "A model for all other models to inherit from ",
-    version: "0.3.0",
-    git: "https://github.com/copleykj/socialize-base-model.git"
+  name: "socialize:base-model",
+  summary: "A model for all other models to inherit from ",
+  version: "0.4.0",
+  git: "https://github.com/copleykj/socialize-base-model.git"
 });
 
-Package.onUse(function(api) {
-    api.versionsFrom("1.0.2.1");
+Package.onUse(function (api) {
+  api.versionsFrom('1.1.0.2');
 
-    api.use(["meteor", "mongo", "underscore"]);
+  api.use([
+    "meteor",
+    "mongo",
+    "underscore"
+  ]);
 
-    api.use([
-        "socialize:server-time@0.1.1", "tmeasday:publish-with-relations@0.2.0", "aldeed:simple-schema@1.3.3",
-        "aldeed:collection2@2.3.3", "matb33:collection-hooks@0.7.13", "meteorhacks:unblock@1.1.0"
+  api.use([
+      "socialize:server-time@0.1.2",
+      "lepozepo:publish-with-relations@1.2.4",
+      "aldeed:simple-schema@1.5.3",
+      "aldeed:collection2@2.8.0",
+      "artpolikarpov:collection-hooks@0.8.5"
     ]);
 
-    api.imply(["meteor", "mongo", "underscore"]);
+  api.imply(["meteor", "mongo", "underscore"]);
 
-    api.imply([
-        "tmeasday:publish-with-relations@0.2.0", "aldeed:simple-schema@1.3.3",
-        "aldeed:collection2@2.3.3", "matb33:collection-hooks@0.7.13", "meteorhacks:unblock@1.1.0"
+  api.imply([
+      "lepozepo:publish-with-relations@1.2.4",
+      "aldeed:simple-schema@1.5.3",
+      "aldeed:collection2@2.8.0",
+      "artpolikarpov:collection-hooks@0.8.5"
     ]);
 
-    api.addFiles(["base-model.js", "security.js"]);
+  api.addFiles(["base-model.js", "security.js"]);
 
-    api.export("BaseModel");
+  api.export("BaseModel");
 });
-
