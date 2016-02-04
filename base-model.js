@@ -57,10 +57,6 @@ BaseModel.extend = function() {
     child.prototype = Object.create(this.prototype);
     child.prototype.constructor = child;
 
-    //access to parent
-    child.prototype._parent_ = this;
-    child.prototype._super_ = this.prototype;
-
     return child;
 };
 
