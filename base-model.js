@@ -70,7 +70,11 @@ BaseModel.extendAndSetupCollection = function(collectionName, noTransform) {
         };
     }
 
-    model.collection = model.prototype._collection = new Mongo.Collection(collectionName, options);
+    var collection = model.collection = new Mongo.Collection(collectionName, options);
+
+    model.prototype.getCollection = function() {
+        return collection;
+    };
 
     Meteor[collectionName] = model.collection;
 
@@ -79,12 +83,12 @@ BaseModel.extendAndSetupCollection = function(collectionName, noTransform) {
 
 BaseModel.appendSchema = function(schemaObject) {
     var schema = new SimpleSchema(schemaObject);
-    var collection = this.prototype._collection;
+    var collection = this.prototype.getCollection();
 
     if(collection){
         collection.attachSchema(schema);
     }else{
-        throw new Error("Can't append schema to non existent collection. Either use extendAndSetupCollection() or assign a collection to Model.prototype._collection");
+        throw new Error("Can't append schema to non existent collection. Please use extendAndSetupCollection() to create your models");
     }
 };
 
@@ -104,7 +108,7 @@ BaseModel.methods = function(methodMap) {
 };
 
 BaseModel.prototype._getSchema = function() {
-    var schema = Meteor._get(this, "_collection", "_c2", "_simpleSchema");
+    var schema = Meteor._get(this.getCollection(), "_c2", "_simpleSchema");
     if(schema){
         return schema;
     }else{
@@ -114,14 +118,14 @@ BaseModel.prototype._getSchema = function() {
 };
 
 BaseModel.prototype._checkCollectionExists = function() {
-    if(!this._collection) {
-        throw new Error("No collection found. Either use extendAndSetupCollection() or assign a collection to Model.prototype._collection");
+    if(!this.getCollection()) {
+        throw new Error("No collection found. Pleas use extendAndSetupCollection() to create your models");
     }
 };
 
 BaseModel.prototype.getCollectionName = function() {
     this._checkCollectionExists()
-    return this._collection._name;
+    return this.getCollection()._name;
 }
 
 BaseModel.prototype.checkOwnership = function() {
@@ -143,12 +147,12 @@ BaseModel.prototype.save = function(callback) {
     if(this._id){
         //diff and update
         obj = diff(obj, this._document);
-        this._collection.update(this._id, {$set:obj}, callback);
+        this.getCollection().update(this._id, {$set:obj}, callback);
     }else{
         if(Meteor.isClient && schema){
             obj = schema.clean(obj);
         }
-        this._id = this._collection.insert(obj, callback);
+        this._id = this.getCollection().insert(obj, callback);
     }
 
     return this;
@@ -158,7 +162,7 @@ BaseModel.prototype.update = function(modifier) {
     if(this._id){
         this._checkCollectionExists();
 
-        this._collection.update(this._id, modifier);
+        this.getCollection().update(this._id, modifier);
     }
 };
 
@@ -194,7 +198,7 @@ BaseModel.prototype._setProps = function(key, value, validationPathOnly) {
 
 
 BaseModel.prototype._updateLocal = function(modifier) {
-    this._collection._collection.update(this._id, modifier);
+    this.getCollection()._collection.update(this._id, modifier);
 };
 
 BaseModel.prototype.set = function(key, value) {
@@ -220,6 +224,6 @@ BaseModel.prototype.remove = function() {
     if(this._id){
         this._checkCollectionExists();
 
-        this._collection.remove({_id:this._id});
+        this.getCollection().remove({_id:this._id});
     }
 };
