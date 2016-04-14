@@ -114,7 +114,7 @@ BaseModel.extend = function() {
         if(this._id){
             //diff and update
             obj = diff(obj, this._document);
-            this.getCollection().update(this._id, {$set:obj}, callback);
+            this.update({$set:obj}, callback);
         }else{
             if(Meteor.isClient && schema){
                 obj = schema.clean(obj);
@@ -125,11 +125,11 @@ BaseModel.extend = function() {
         return this;
     };
 
-    Model.prototype.update = function(modifier) {
+    Model.prototype.update = function(modifier, callback) {
         if(this._id){
             this._checkCollectionExists();
 
-            this.getCollection().update(this._id, modifier);
+            return this.getCollection().update(this._id, modifier, callback);
         }
     };
 
