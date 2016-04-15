@@ -6,7 +6,7 @@ Package.describe({
 });
 
 Package.onUse(function(api) {
-    api.versionsFrom("1.0.2.1");
+    api.versionsFrom("1.3");
 
     api.use(["meteor", "mongo", "underscore", "ecmascript"]);
 
