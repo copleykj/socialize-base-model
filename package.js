@@ -23,3 +23,15 @@ Package.onUse(function(api) {
 
     api.mainModule("base-model.js");
 });
+
+Package.onTest(function(api){
+    api.use(["tinytest", "meteor", "mongo", "underscore", "ecmascript"]);
+
+    api.use([
+        "socialize:server-time@0.1.2", "aldeed:simple-schema@1.5.3",
+        "aldeed:collection2@2.9.0", "matb33:collection-hooks@0.8.1",
+        "socialize:base-model"
+    ]);
+
+    api.mainModule("tests.js");
+});
