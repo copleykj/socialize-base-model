@@ -8,20 +8,18 @@ Package.describe({
 Package.onUse(function(api) {
     api.versionsFrom("1.0.2.1");
 
-    api.use(["meteor", "mongo", "underscore"]);
+    api.use(["meteor", "mongo", "underscore", "ecmascript"]);
 
     api.use([
         "socialize:server-time@0.1.2", "aldeed:simple-schema@1.5.3",
         "aldeed:collection2@2.9.0", "matb33:collection-hooks@0.8.1"
     ]);
 
-    api.imply(["meteor", "mongo", "underscore"]);
+    api.imply(["meteor", "mongo", "underscore", "ecmascript"]);
 
     api.imply([
         "aldeed:simple-schema@1.5.3", "aldeed:collection2@2.9.0", "matb33:collection-hooks@0.8.1"
     ]);
 
-    api.addFiles(["base-model.js", "security.js"]);
-
-    api.export("BaseModel");
+    api.mainModule("base-model.js");
 });

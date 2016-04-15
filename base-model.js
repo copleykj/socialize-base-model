@@ -1,54 +1,51 @@
-//Object.create shim
-if (typeof Object.create != 'function') {
-    Object.create = (function() {
-        var thing = function() {};
-        return function (prototype) {
-            if (arguments.length > 1) {
-                throw Error('Second argument not supported');
-            }
-            if (typeof prototype != 'object') {
-                throw TypeError('Argument must be an object');
-            }
-            thing.prototype = prototype;
-            var result = new thing();
-            thing.prototype = null;
-            return result;
-        };
-    })();
-}
+import { _ } from 'meteor/underscore';
+import { Meteor } from 'meteor/meteor';
+import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import './security.js';
 
-var diff = function(a,b) {
-    var keys = _.map(a, function(v, k){
-        if(b[k] === v){
-            return k;
-        }
-    });
-    return _.omit(a, keys);
-};
-
-var extend = function(reciever, provider) {
-    for(prop in provider){
+function extend(reciever, provider) {
+    for(var prop in provider){
         if(provider.hasOwnProperty(prop)){
             reciever[prop] = provider[prop];
         }
     }
 }
 
-/*globals BaseModel:true*/
+function diff(a,b) {
+    var keys = _.map(a, function(v, k){
+        if(b[k] === v){
+            return k;
+        }
+    });
+    return _.omit(a, keys);
+}
 
-BaseModel = function(){};
-
-BaseModel.extend = function() {
-    var Model = function(document) {
+export default class BaseModel {
+    constructor(document){
+        document = document || {};
         extend(this, document);
         this._document = document;
-    };
+    }
 
-    Model.createEmpty = function (_id) {
+    static createEmpty(_id) {
         return new this({_id:_id});
-    };
+    }
 
-    Model.appendSchema = function(schemaObject) {
+    static attachCollection(collection, transform = true) {
+        if(transform){
+            collection._transform = (document) => {
+                return new this(document);
+            };
+        }
+
+        this.prototype.getCollection = function() {
+            return collection;
+        };
+
+        Meteor[collection._name] = collection;
+    }
+
+    static appendSchema(schemaObject) {
         var schema = new SimpleSchema(schemaObject);
         var collection = this.prototype.getCollection();
 
@@ -57,24 +54,9 @@ BaseModel.extend = function() {
         }else{
             throw new Error("Can't append schema to non existent collection. Please use extendAndSetupCollection() to create your models");
         }
-    };
+    }
 
-    Model.methods = function(methodMap) {
-        var self = this;
-        if(_.isObject(methodMap)){
-            _.each(methodMap, function(method, name){
-                if(_.isFunction(method)){
-                    if(!self.prototype[name]){
-                        self.prototype[name] = method;
-                    }else{
-                        throw new Meteor.Error("existent-method", "The method "+name+" already exists.");
-                    }
-                }
-            });
-        }
-    };
-
-    Model.prototype._getSchema = function() {
+    _getSchema() {
         var schema = Meteor._get(this.getCollection(), "_c2", "_simpleSchema");
         if(schema){
             return schema;
@@ -82,24 +64,25 @@ BaseModel.extend = function() {
             throw new Meteor.Error("noSchema", "You don't have a schema defined for " + this.getCollectionName());
         }
 
-    };
+    }
 
-    Model.prototype._checkCollectionExists = function() {
+    _checkCollectionExists() {
         if(!this.getCollection()) {
             throw new Error("No collection found. Pleas use extendAndSetupCollection() to create your models");
         }
-    };
+    }
 
-    Model.prototype.getCollectionName = function() {
-        this._checkCollectionExists()
+
+    getCollectionName() {
+        this._checkCollectionExists();
         return this.getCollection()._name;
-    };
+    }
 
-    Model.prototype.checkOwnership = function() {
+    checkOwnership() {
         return this.userId === Meteor.userId();
-    };
+    }
 
-    Model.prototype.save = function(callback) {
+    save(callback) {
         this._checkCollectionExists();
         var obj = {};
         var schema = this._getSchema();
@@ -123,17 +106,17 @@ BaseModel.extend = function() {
         }
 
         return this;
-    };
+    }
 
-    Model.prototype.update = function(modifier) {
+    update(modifier) {
         if(this._id){
             this._checkCollectionExists();
 
             this.getCollection().update(this._id, modifier);
         }
-    };
+    }
 
-    Model.prototype._setProps = function(key, value, validationPathOnly) {
+    _setProps(key, value, validationPathOnly) {
         var current;
         var level = this;
         var steps = key.split(".");
@@ -161,14 +144,14 @@ BaseModel.extend = function() {
         currentSet[last] = value;
 
         return set;
-    };
+    }
 
 
-    Model.prototype._updateLocal = function(modifier) {
+    _updateLocal(modifier) {
         this.getCollection()._collection.update(this._id, modifier);
-    };
+    }
 
-    Model.prototype.set = function(key, value) {
+    set(key, value) {
         var context = this._getSchema().newContext();
         var obj = {};
 
@@ -185,36 +168,15 @@ BaseModel.extend = function() {
             throw new Meteor.Error(context.keyErrorMessage(key));
         }
         return this;
-    };
+    }
 
-    Model.prototype.remove = function() {
+    remove() {
         if(this._id){
             this._checkCollectionExists();
 
             this.getCollection().remove({_id:this._id});
         }
-    };
-
-    return Model;
-};
-
-BaseModel.extendAndSetupCollection = function(collectionName, noTransform) {
-    var options = {};
-    var model = this.extend();
-
-    if(!noTransform){
-        options.transform = function(document){
-            return new model(document);
-        };
     }
 
-    var collection = model.collection = new Mongo.Collection(collectionName, options);
+}
 
-    model.prototype.getCollection = function() {
-        return collection;
-    };
-
-    Meteor[collectionName] = model.collection;
-
-    return model;
-};
