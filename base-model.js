@@ -66,15 +66,13 @@ export default class BaseModel {
 
     }
 
-    _checkCollectionExists() {
-        if(!this.getCollection()) {
-            throw new Error("No collection found. Pleas use extendAndSetupCollection() to create your models");
-        }
+    getCollection() {
+        //We just throw here. This method is reassigned in attachCollection method when collection is attached.
+        throw new Meteor.Error("noCollection", "You must use ClassName.attachCollection to attach a collection to your model.");
     }
 
 
     getCollectionName() {
-        this._checkCollectionExists();
         return this.getCollection()._name;
     }
 
@@ -83,7 +81,6 @@ export default class BaseModel {
     }
 
     save(callback) {
-        this._checkCollectionExists();
         var obj = {};
         var schema = this._getSchema();
 
@@ -110,8 +107,6 @@ export default class BaseModel {
 
     update(modifier) {
         if(this._id){
-            this._checkCollectionExists();
-
             this.getCollection().update(this._id, modifier);
         }
     }
@@ -172,8 +167,6 @@ export default class BaseModel {
 
     remove() {
         if(this._id){
-            this._checkCollectionExists();
-
             this.getCollection().remove({_id:this._id});
         }
     }
