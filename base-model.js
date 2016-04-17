@@ -94,7 +94,7 @@ export default class BaseModel {
         if(this._id){
             //diff and update
             obj = diff(obj, this._document);
-            this.getCollection().update(this._id, {$set:obj}, callback);
+            this.update(this._id, {$set:obj}, callback);
         }else{
             if(Meteor.isClient && schema){
                 obj = schema.clean(obj);
@@ -105,9 +105,9 @@ export default class BaseModel {
         return this;
     }
 
-    update(modifier) {
+    update(modifier, callback) {
         if(this._id){
-            this.getCollection().update(this._id, modifier);
+            this.getCollection().update(this._id, modifier, callback);
         }
     }
 
@@ -165,9 +165,9 @@ export default class BaseModel {
         return this;
     }
 
-    remove() {
+    remove(callback) {
         if(this._id){
-            this.getCollection().remove({_id:this._id});
+            this.getCollection().remove({_id:this._id}, callback);
         }
     }
 
