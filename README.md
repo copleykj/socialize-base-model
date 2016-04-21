@@ -1,191 +1,161 @@
 # Base Model #
 
-Provides an extensible base from which other extensible models can be built.
+Provides an extensible base from which to build your models. The [Socialize][3] package set is built upon this package.
 
-## How it works ##
+## Installation ##
 
-BaseModel is the foundation on which the Socialize package set is built. It provides an easy way to set up your models with helpers and other convenience functions. Once you have created your models its as simple running `find` and `findOne` queries on your collections to get instances of the model. Once you have an instance you can then use the helpers to display data or the helper methods to modify and update the data for the model.
-
-## Usage ##
-
-Assuming we need to model books, we create the model like so.
-
-```javascript
-Book = BaseModel.extendAndSetupCollection("books");
+```
+meteor install socialize:base-model
 ```
 
-This creates a Class named `Book`, collection named `books`, assigns a reference for the collection to `Meteor.books` and tells the collection to return instances of the model instead of regular documents.
 
-Now for security we need to set up the schema for the collection. BaseModel provides a convenient static method for adding a [SimpleSchema][1] to the collection, which is inherited by our classes when we extend BaseModel.
+## Basic Usage ##
+
+For save/update/delete you will need a collection attached to the Class which has a SimpleSchema attached to it. This is to ensure that you think about securing your models. Properly secured models can execute database operations completely client side without the need to manually define Meteor Methods. If you aren't familiar with Simple Schema, you can find the documentation [Here][1].
+
+Lets get started with a quick example by Modeling a Book.
 
 ```javascript
-Book.appendSchema({
-	"userId":{
-		type: String,
-		regEx: SimpleSchema.RegEx.Id,
-		autoValue: function() {
-			if(this.isInsert){
-				return this.userId;
-			}
-		}
-	},
-	"title":{
-		type: String
-		max: 30,
-	},
-	"subTitle":{
-		type: String,
-		max: 100
-	},
-	"authorId":{
-		type: String,
-		regEx: SimpleSchema.RegEx.Id
-	}
+import BaseModel from 'meteor/socialize:base-model';
+import { Mongo } from 'meteor/mongo';
+import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+
+//We assume that another model of an Author exists so we can import its collection here..
+import { AuthorsCollection }  from "/models/Author";
+
+
+const BooksCollection = new Mongo.Collection("books");
+
+const BooksSchema = new SimpleSchema({
+    "userId":{
+        type: String,
+        regEx: SimpleSchema.RegEx.Id,
+        autoValue: function() {
+            if(this.isInsert){
+                return this.userId;
+            }
+        }
+    },
+    "title":{
+        type: String
+        max: 30,
+    },
+    "subTitle":{
+        type: String,
+        max: 100
+    },
+    "authorId":{
+        type: String,
+        regEx: SimpleSchema.RegEx.Id
+    }
+});
+
+class BookModel extends BaseModel {
+    constructor(document) {
+        super(document);  //Must call super passing in the document.
+    }
+
+    owner() {
+        return Meteor.users.findOne(this.userId);
+    }
+
+    fullTitle() {
+        return `${this.title}: ${this.subTitle}`;
+    }
+
+    author() {
+        return AuthorsCollection.findOne(this.authorId);
+    }
+}
+
+//Attach the schema to the collection
+BooksCollection.attachSchema(BooksSchema);
+
+//Attach the collection to the model so we can save/update/delete
+BookModel.attachCollection(BooksCollection);
+
+BooksCollection.allow({
+    insert: function(userId, book){
+        /*
+        book is an instance of the Book class thanks to collection
+        transforms. This enables us to call it's methods to check
+        if the user owns it and the author record exists
+        */
+        return book.checkOwnership() && !!book.author();
+    },
+    update: function(userId, book){
+        /*
+        book is an instance of the Book class thanks to collection
+        transforms. This enables us to call it's methods to check
+        if the user owns it and the author record exists
+        */
+        return book.checkOwnership() && !!book.author();
+    },
+    remove: function(userId, book) {
+        /*
+        book is an instance of the Book class thanks to collection
+        transforms. This enables us to call it's methods to check
+        if the user owns it and the author record exists
+        */
+        return book.checkOwnership()
+    }
 });
 ```
 
-And to finalize the write security we will use some light checking in allow or deny
+Let's examine what we have done here.
+
+1. Import all the necessary parts. `Mongo`, `SimpleSchema`, and `BaseModel`.
+2. Instantiate a `Mongo.Collection` and a `SimpleSchema` and define the schema for the model
+3. Attach the schema to the collection as our first layer of write security.
+4. Define a `Book` class that extends `BaseModel` making sure to call `super(document)`
+5. Attach the collection to the `Book` class enabling instances of the class to execute save/update/remove operations
+6. Specify allow rules for the collection as a final layer of security thus allowing total client side manipulation.
+
+Take note that attaching the collection to the Class will also assign a reference to `Meteor` at `Meteor["collectionName"]`, so with the above code we would have a reference to `BooksCollection` assigned to `Meteor.books`.
+
+
+Now we are all set up to use the new `Book` class, and since we've properly secured our database writes through a combination of [SimpleSchema][1] and allow rules, we can now do all of our database operations using client side database methods.
+
+>**Don't believe client side only database is possible?** Check the [results][2] of Discover Meteor's allow/deny security challenge and take note that it mentions issues with other submissions, but you'll only find *Kelly Copley* listed under people who got it right. Guess how I secured my solution ;-).
+
+With this in mind, lets insert a book in to the database client side.
 
 ```javascript
-Meteor.books.allow({
-	insert: function(userId, book){
-		//book is an instance of Book class thanks to collection transforms.
-		return book.checkOwnership() && !!Meteor.authors.findOne(this.authorId);
-	},
-	update: function(userId, book){
-		//book is an instance of Book class thanks to collection transforms.
-		return book.checkOwnership();
-	},
-	remove: function(userId, book) {
-		//book is an instance of Book class thanks to collection transforms.
-		return book.checkOwnership()
-	}
-});
-```
-
-Now that we have a `Book` class with a [SimpleSchema][1] attached to it's collection and allow rules in place, we can give it some helper methods that let us access it's data and reference related models.
-
-```javascript
-Book.methods({
-	"owner": function(){
-		return Meteor.users.findOne(this.userId);
-	},
-	"author": function() {
-		//return an instance of Author that itself has methods
-		return Meteor.authors.findOne(this.authorId);
-	},
-	"fullTitle": function() {
-		return this.title + ": " + this.subTitle;
-	}
-});
-```
-Now we are all set up to use the new `Book` class, and since we've properly secured our database writes through a cobination of [SimpleSchema][1] and allow rules, we can now do all of our database operations using client side database methods.
-
-Lets Insert a book
-
-```javascript
+//first we get get an Author for the book we want to insert
 var author = Meteor.authors.findOne({firstName:"Dave", lastName:"Pilkey"});
 
 var book = new Book({
-	title: "Captain Underpants",
-	subTitle: "and The Sensational Saga of Sir-Stinks-A-Lot",
-	authorId: author._id
+    title: "Captain Underpants",
+    subTitle: "and The Sensational Saga of Sir-Stinks-A-Lot",
+    authorId: author._id,
+    garbageKey: "Stripped By SimpleSchema.clean() when calling save()"
 });
 
-book.save();
+book.save(); //This will also clean the data before inserting so no garbage data gets through.
 ```
+We do this with code (dev tools? :-P ), but you could use a form and template events, OR you could define necessary information on your `SimpleSchema` and use `aldeed:autoform` to render a form to input this information.
 
-Now, assuming we have a template with a helper that returns a cursor from `Meteor.books`, we can now use the methods of the `Book` class as template helpers as well.
+Now that we have data in the database we can read it out, display it, and use the methods defined on the class as helpers. Assuming we have a template with a helper that returns a cursor from `Meteor.books`, we can iterate over the cursor and the context will be an instance of the `Book` class and we can call the methods of the class such as `fullTitle`, and `author`. Awesomely, since we've also returned a instance of the `Author` class from the `author` method, we can also call it's methods as well such as `author.fullName` which could concatenate the authors first and last name and return a single string.
 
 ```html
-	<h1>Book List</h1>
-	{{#each books}}
-		<p>{{author.fullName}}<p>
-		<p>{{fullTitle}}</p>
-	{{/each}}
+<h1>Book List</h1>
+{{#each books}}{{--! --}}
+    <p>Author's Name: {{author.fullName}}<p>
+    <p>{{fullTitle}}</p>
+{{/each}}
 ```
----
-
-## BaseModel (class) ##
-
-### Instance Methods ###
-
-Instance methods are helper functions available on the instances returned from `find` and `findOne` queries. BaseModel provides some that are inherited in the extend process.
-
-**checkOwnership** - Check to make sure the userId property is equal to the _id of the currently logged in user.
-
-```javascript
-var myBook = Meteor.books.findOne();
-if(myBook.checkOwnership()){
-	mybook.remove();
-}
+This would yield HTML like so..
+```html
+<h1>Book List</h1>
+<p>Author's Name: Dave Pilkey<p>
+<p>Captain Underpants: and The Sensational Saga of Sir-Stinks-A-Lot </p>
 ```
 
-**set** - update a property of the underlying data. This also updates the underlying minimongo collection if a record exists, and will reflect the change on the page if displayed there. This however does not save the data to the server side database. To save to server call the `save` method on the instance.
+## Caveats ##
+There could be some things that I guess might not be so obvious. I'll try to list them here as they come up.
 
-_**If using this in a reactive context such as the data context of a template and modifying in an event attached to that template, you will need to save a copy to the template and modify that as modifying the underlying minimongo will cause a recomputation and wipe out any changes to the instance that was the data context**_
-
-```javascript
-var book = Meteor.books.findOne();
-
-book.set("title", "Diary of a Wimpy Kid");
-```
-
-**save** - Save instance to the database. If the instance was not previously saved to the database this will perform an insert. Otherwise it will diff the changes and update the database using a $set and update.
-
-```javascript
-var book = Meteor.books.findOne();
-
-book.set("title", "To Kill a Mockingbird");
-
-book.save();
-```
-
-**update(modifier)** - Update the record for the instance making changes specified by the modifier. In most cases it'll be easier to use `save` but this is here if needed.
-
-```javascript
-Meteor.books.findOne().update({$set:{title:"Meteor For Dummies"}});
-```
-
-**remove** - Delete the database record for the instance.
-
-```javascript
-Meteor.books.findOne().remove();
-```
-
-## Static Methods ##
-
-**extendAndSetupCollection("collectionName")** - Extend BaseModel and then set up the collection for the model and assign it to `Meteor[collectionName]` for ease of access outside of file and package scope.
-
-```javascript
-Author = BaseModel.extendAndSetupCollection("authors");
-```
-
-**appendSchema(SchemaObject)** - Create a schema or add to the schema if one already exists. `SchemaObject` is the same as you would pass to `new SimpleSchema(SchemaObject)`.
-
-```javascript
-Author.attachSchema({
-	"firstName":{
-		type: String,
-		max: 20
-	},
-	"lastName": {
-		type: String,
-		max: 20
-	}
-});
-```
-
-**methods(methodObject)** - add methods to the class. `methodsObject` is a hash of functions.
-
-```javascript
-Author.methods({
-	fullName: function() {
-		return this.firstName +" "+ this.lastName;
-	}
-});
-```
-
-**createEmpty(id)** - Returns an instance with only the _id field set as the specified id *{_id:"8D7XmQb3KEpGqc3AD"}*. Handy for when you already have the _id of a record and want to do an update to the collection but don't want to do a full database call to get a populated instance.
+1. You must publish data for related models.. If `book.author()` returns a model of author that doesn't have data published for it, then it will return undefined. This is just how Meteor works.
 
 [1]: https://github.com/aldeed/meteor-simple-schema
+[2]: https://www.discovermeteor.com/blog/allow-deny-challenge-results/#results
+[3]: https://atmospherejs.com/socialize
