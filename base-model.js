@@ -20,7 +20,7 @@ function diff(a,b) {
     return _.omit(a, keys);
 }
 
-export default class BaseModel {
+export class BaseModel {
     constructor(document){
         document = document || {};
         extend(this, document);
@@ -31,18 +31,23 @@ export default class BaseModel {
         return new this({_id:_id});
     }
 
-    static attachCollection(collection, transform = true) {
-        if(transform){
-            collection._transform = (document) => {
-                return new this(document);
-            };
-        }
+    static updateTransformFunction() {
+        this.prototype.getCollection()._transform = (document) => {
+            return new this(document);
+        };
+    }
 
+    static attachCollection(collection, transform = true) {
         this.prototype.getCollection = function() {
             return collection;
         };
 
         Meteor[collection._name] = collection;
+
+        if(transform){
+            this.updateTransformFunction();
+        }
+
     }
 
     static appendSchema(schemaObject) {
@@ -172,4 +177,3 @@ export default class BaseModel {
     }
 
 }
-
