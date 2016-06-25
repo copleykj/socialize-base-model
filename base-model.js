@@ -31,6 +31,21 @@ export class BaseModel {
         return new this({_id:_id});
     }
 
+    static methods(methodMap) {
+        var self = this;
+        if(_.isObject(methodMap)){
+            _.each(methodMap, function(method, name){
+                if(_.isFunction(method)){
+                    if(!self.prototype[name]){
+                        self.prototype[name] = method;
+                    }else{
+                        throw new Meteor.Error("existent-method", "The method "+name+" already exists.");
+                    }
+                }
+            });
+        }
+    };
+
     static updateTransformFunction() {
         this.prototype.getCollection()._transform = (document) => {
             return new this(document);
