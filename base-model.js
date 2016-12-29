@@ -1,6 +1,7 @@
 import { _ } from 'meteor/underscore';
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { diff } from 'mongodb-diff';
 import './security.js';
 
 function extend(reciever, provider) {
@@ -9,15 +10,6 @@ function extend(reciever, provider) {
             reciever[prop] = provider[prop];
         }
     }
-}
-
-function diff(a,b) {
-    var keys = _.map(a, function(v, k){
-        if(b[k] === v){
-            return k;
-        }
-    });
-    return _.omit(a, keys);
 }
 
 export class BaseModel {
@@ -101,20 +93,18 @@ export class BaseModel {
     }
 
     save(callback) {
-        var obj = {};
-        var schema = this._getSchema();
+        const schema = this._getSchema();
 
-        _.each(this, function(value, key) {
-            if(key !== "_document"){
-                obj[key] = value;
-            }
-        });
-
+        let obj = Object.keys(this).filter(
+            (key) => key !== "_document").reduce(
+                (accumulator, key) => {
+                  accumulator[key] = this[key];
+                  return accumulator;
+                }, {}
+            );
 
         if(this._id){
-            //diff and update
-            obj = diff(obj, this._document);
-            this.update(this._id, {$set:obj}, callback);
+            this.update(diff(this._document, obj), callback);
         }else{
             if(Meteor.isClient && schema){
                 obj = schema.clean(obj);

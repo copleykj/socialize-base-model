@@ -6,6 +6,9 @@ Package.describe({
 });
 
 Package.onUse(function(api) {
+    Npm.depends({
+        'mongodb-diff':'0.4.3'
+    });
     api.versionsFrom("1.3");
 
     api.use(["meteor", "mongo", "underscore", "ecmascript"]);
