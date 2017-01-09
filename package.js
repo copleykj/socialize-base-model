@@ -15,13 +15,13 @@ Package.onUse(function(api) {
 
     api.use([
         "socialize:server-time@0.1.2", "aldeed:simple-schema@1.5.3",
-        "aldeed:collection2@2.9.0", "matb33:collection-hooks@0.8.1"
+        "aldeed:collection2@2.9.0", "matb33:collection-hooks@0.8.4"
     ]);
 
     api.imply(["meteor", "mongo", "underscore", "ecmascript"]);
 
     api.imply([
-        "aldeed:simple-schema@1.5.3", "aldeed:collection2@2.9.0", "matb33:collection-hooks@0.8.1"
+        "aldeed:simple-schema@1.5.3", "aldeed:collection2@2.9.0", "matb33:collection-hooks@0.8.4"
     ]);
 
     api.mainModule("base-model.js");
@@ -32,7 +32,7 @@ Package.onTest(function(api){
 
     api.use([
         "socialize:server-time@0.1.2", "aldeed:simple-schema@1.5.3",
-        "aldeed:collection2@2.9.0", "matb33:collection-hooks@0.8.1",
+        "aldeed:collection2@2.9.0", "matb33:collection-hooks@0.8.4",
         "socialize:base-model"
     ]);
 
