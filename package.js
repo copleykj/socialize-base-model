@@ -5,10 +5,11 @@ Package.describe({
     git: "https://github.com/copleykj/socialize-base-model.git"
 });
 
+Npm.depends({
+    'rus-diff':'1.1.0'
+});
+
 Package.onUse(function(api) {
-    Npm.depends({
-        'mongodb-diff':'0.4.3'
-    });
     api.versionsFrom("1.3");
 
     api.use(["meteor", "mongo", "underscore", "ecmascript"]);
