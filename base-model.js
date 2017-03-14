@@ -1,7 +1,7 @@
 import { _ } from 'meteor/underscore';
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { diff } from 'mongodb-diff';
+import { diff } from 'rus-diff';
 import './security.js';
 
 function extend(reciever, provider) {
@@ -13,8 +13,11 @@ function extend(reciever, provider) {
 }
 
 export class BaseModel {
-    constructor(document){
+    constructor(document, preClean){
         document = document || {};
+        if(preClean){
+            document = this._getSchema().clean(document);
+        }
         extend(this, document);
         this._document = document;
     }
@@ -88,6 +91,20 @@ export class BaseModel {
         return this.getCollection()._name;
     }
 
+    // get all values from the model that do not have a denyUpdate or denyUntrusted in their schema
+    getUpdatableFields() {
+        const schema = this._getSchema()._schema;
+        const fields = {_id: this._id};
+
+        for(let key of Object.keys(this)){
+            if (schema[key] && !(schema[key].custom && schema[key].custom === SimpleSchema.denyUntrusted) && !schema[key].denyUdate){
+                fields[key] = this[key];
+            }
+        }
+
+        return fields;
+    }
+
     checkOwnership() {
         return this.userId === Meteor.userId();
     }
@@ -104,7 +121,12 @@ export class BaseModel {
             );
 
         if(this._id){
-            this.update(diff(this._document, obj), callback);
+            let updateDiff = diff(this._document, obj);
+            if(!_.isEmpty(updateDiff)){
+                this.update(updateDiff, callback);
+            } else {
+                callback && callback(null);
+            }
         }else{
             if(Meteor.isClient && schema){
                 obj = schema.clean(obj);
