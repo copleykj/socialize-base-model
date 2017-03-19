@@ -6,7 +6,8 @@ Package.describe({
 });
 
 Npm.depends({
-    'rus-diff':'1.1.0'
+    'rus-diff':'1.1.0',
+	'simpl-schema':'0.2.3'
 });
 
 Package.onUse(function(api) {
@@ -15,14 +16,14 @@ Package.onUse(function(api) {
     api.use(["meteor", "mongo", "underscore", "ecmascript"]);
 
     api.use([
-        "socialize:server-time@0.1.2", "aldeed:simple-schema@1.5.3",
-        "aldeed:collection2@2.9.0", "matb33:collection-hooks@0.8.4"
+        "socialize:server-time@0.1.2",
+        "aldeed:collection2-core@2.0.0", "matb33:collection-hooks@0.8.4"
     ]);
 
     api.imply(["meteor", "mongo", "underscore", "ecmascript"]);
 
     api.imply([
-        "aldeed:simple-schema@1.5.3", "aldeed:collection2@2.9.0", "matb33:collection-hooks@0.8.4"
+        "aldeed:collection2-core@2.0.0", "matb33:collection-hooks@0.8.4"
     ]);
 
     api.mainModule("base-model.js");
@@ -32,8 +33,8 @@ Package.onTest(function(api){
     api.use(["tinytest", "meteor", "mongo", "underscore", "ecmascript"]);
 
     api.use([
-        "socialize:server-time@0.1.2", "aldeed:simple-schema@1.5.3",
-        "aldeed:collection2@2.9.0", "matb33:collection-hooks@0.8.4",
+        "socialize:server-time@0.1.2",
+        "aldeed:collection2-core@2.0.0", "matb33:collection-hooks@0.8.4",
         "socialize:base-model"
     ]);
 
