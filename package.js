@@ -17,13 +17,15 @@ Package.onUse(function(api) {
 
     api.use([
         "socialize:server-time@0.1.2",
-        "aldeed:collection2-core@2.0.0", "matb33:collection-hooks@0.8.4"
+        "aldeed:collection2-core@2.0.0", "aldeed:schema-index@2.0.0", "aldeed:schema-deny@2.0.0",
+        "matb33:collection-hooks@0.8.4"
     ]);
 
     api.imply(["meteor", "mongo", "underscore", "ecmascript"]);
 
     api.imply([
-        "aldeed:collection2-core@2.0.0", "matb33:collection-hooks@0.8.4"
+        "aldeed:collection2-core@2.0.0", "aldeed:schema-index@2.0.0", "aldeed:schema-deny@2.0.0",
+        "matb33:collection-hooks@0.8.4"
     ]);
 
     api.mainModule("base-model.js");
