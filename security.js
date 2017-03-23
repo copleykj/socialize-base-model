@@ -1,6 +1,14 @@
-import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { SimpleSchema } from 'simpl-schema';
+import MessageBox from 'message-box';
 
-SimpleSchema.messages({Untrusted: "Inserts/Updates from untrusted code not supported"});
+
+MessageBox.defaults({
+    messages: {
+        en: {
+            Untrusted: "Inserts/Updates from untrusted code not supported"
+        },
+    },
+});
 
 SimpleSchema.denyUntrusted = function() {
     if(this.isSet){
