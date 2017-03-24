@@ -9,10 +9,10 @@ In the spirit of keeping this and all of the packages in the [Socialize](https:/
 
 ## Installation ##
 
+```sh
+$ meteor install socialize:base-model
+$ meteor npm install --save simpl-schema
 ```
-meteor install socialize:base-model
-```
-
 
 ## Basic Usage ##
 
@@ -23,7 +23,7 @@ Lets get started with a quick example by Modeling a Book.
 ```javascript
 import BaseModel from 'meteor/socialize:base-model';
 import { Mongo } from 'meteor/mongo';
-import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import SimpleSchema from 'simpl-schema';
 
 //We assume that another model of an Author exists so we can import its collection here..
 import { AuthorsCollection }  from "/models/Author";

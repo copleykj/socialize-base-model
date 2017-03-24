@@ -1,7 +1,7 @@
 import { Tinytest } from 'meteor/tinytest';
 import BaseModel from 'meteor/socialize:base-model';
 import { Mongo } from 'meteor/mongo';
-import { SimpleSchema } from 'simpl-schema';
+import SimpleSchema from 'simpl-schema';
 
 let collection = new Mongo.Collection('tests');
 let schema = new SimpleSchema({
