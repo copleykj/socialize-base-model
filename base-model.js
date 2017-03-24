@@ -97,7 +97,7 @@ export class BaseModel {
         const fields = {_id: this._id};
 
         for(let key of Object.keys(this)){
-            if (schema[key] && !(schema[key].custom && schema[key].custom === SimpleSchema.denyUntrusted) && !schema[key].denyUdate){
+            if (schema[key] && !(schema[key].custom && schema[key].custom === SimpleSchema.denyUntrusted) && !schema[key].denyUpdate){
                 fields[key] = this[key];
             }
         }
