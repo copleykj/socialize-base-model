@@ -7,7 +7,7 @@ Package.describe({
 
 Npm.depends({
     'rus-diff':'1.1.0',
-    'simpl-schema':'0.2.3'
+    'simpl-schema':'0.3.0'
 });
 
 Package.onUse(function(api) {

@@ -1,6 +1,6 @@
 import { _ } from 'meteor/underscore';
 import { Meteor } from 'meteor/meteor';
-import { SimpleSchema } from 'simpl-schema';
+import SimpleSchema from 'simpl-schema';
 import { diff } from 'rus-diff';
 import './security.js';
 
