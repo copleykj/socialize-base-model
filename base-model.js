@@ -68,7 +68,7 @@ export class BaseModel {
         if(collection){
             collection.attachSchema(schema);
         }else{
-            throw new Error("Can't append schema to non existent collection. Please use extendAndSetupCollection() to create your models");
+            throw new Meteor.Error("Can't append schema to non existent collection. Please attach a collection to your model using `ModelName.attachCollection`");
         }
     }
 
