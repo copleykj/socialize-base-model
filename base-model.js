@@ -15,6 +15,7 @@ function extend(reciever, provider) {
 export class BaseModel {
     constructor(document, preClean){
         document = document || {};
+        delete document._document;
         if(preClean){
             document = this._getSchema().clean(document);
         }
