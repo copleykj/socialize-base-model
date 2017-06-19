@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 import { _ } from 'meteor/underscore';
 import { Meteor } from 'meteor/meteor';
 import SimpleSchema from 'simpl-schema';
@@ -5,86 +6,83 @@ import { diff } from 'rus-diff';
 import './security.js';
 
 function extend(reciever, provider) {
-    for(var prop in provider){
-        if(provider.hasOwnProperty(prop)){
-            reciever[prop] = provider[prop];
+    const rec = reciever;
+    for (const prop in provider) {
+        if (prop in provider) {
+            rec[prop] = provider[prop];
         }
     }
 }
 
-export class BaseModel {
-    constructor(document, preClean){
-        document = document || {};
-        delete document._document;
-        if(preClean){
-            document = this._getSchema().clean(document);
+export class BaseModel { //eslint-disable-line
+    constructor(document = {}, preClean) {
+        let doc = document;
+
+        delete doc._document;
+        if (preClean) {
+            doc = this._getSchema().clean(doc);
         }
-        extend(this, document);
-        this._document = document;
+        extend(this, doc);
+        this._document = doc;
     }
 
     static createEmpty(_id) {
-        return new this({_id:_id});
+        return new this({ _id });
     }
 
     static methods(methodMap) {
-        var self = this;
-        if(_.isObject(methodMap)){
-            _.each(methodMap, function(method, name){
-                if(_.isFunction(method)){
-                    if(!self.prototype[name]){
+        const self = this;
+        if (_.isObject(methodMap)) {
+            _.each(methodMap, function eachMapMethod(method, name) {
+                if (_.isFunction(method)) {
+                    if (!self.prototype[name]) {
                         self.prototype[name] = method;
-                    }else{
-                        throw new Meteor.Error("existent-method", "The method "+name+" already exists.");
+                    } else {
+                        throw new Meteor.Error('existent-method', `The method ${name} already exists.`);
                     }
                 }
             });
         }
-    };
+    }
 
     static updateTransformFunction() {
-        this.prototype.getCollection()._transform = (document) => {
-            return new this(document);
-        };
+        this.prototype.getCollection()._transform = document => new this(document);
     }
 
     static attachCollection(collection, transform = true) {
-        this.prototype.getCollection = function() {
+        this.prototype.getCollection = function getCollection() {
             return collection;
         };
 
         Meteor[collection._name] = collection;
 
-        if(transform){
+        if (transform) {
             this.updateTransformFunction();
         }
-
     }
 
     static appendSchema(schemaObject) {
-        var schema = new SimpleSchema(schemaObject);
-        var collection = this.prototype.getCollection();
+        const schema = new SimpleSchema(schemaObject);
+        const collection = this.prototype.getCollection();
 
-        if(collection){
+        if (collection) {
             collection.attachSchema(schema);
-        }else{
+        } else {
             throw new Meteor.Error("Can't append schema to non existent collection. Please attach a collection to your model using `ModelName.attachCollection`");
         }
     }
 
     _getSchema() {
-        var schema = Meteor._get(this.getCollection(), "_c2", "_simpleSchema");
-        if(schema){
+        const schema = Meteor._get(this.getCollection(), '_c2', '_simpleSchema');
+        if (schema) {
             return schema;
-        }else{
-            throw new Meteor.Error("noSchema", "You don't have a schema defined for " + this.getCollectionName());
         }
-
+        throw new Meteor.Error('noSchema', `You don't have a schema defined for ${this.getCollectionName()}`);
     }
 
     getCollection() {
-        //We just throw here. This method is reassigned in attachCollection method when collection is attached.
-        throw new Meteor.Error("noCollection", "You must use ClassName.attachCollection to attach a collection to your model.");
+        // We just throw here. This method is reassigned in attachCollection method when collection is attached.
+        if (this) throw new Meteor.Error('noCollection', 'You must use ClassName.attachCollection to attach a collection to your model.');
     }
 
 
@@ -95,10 +93,10 @@ export class BaseModel {
     // get all values from the model that do not have a denyUpdate or denyUntrusted in their schema
     getUpdatableFields() {
         const schema = this._getSchema()._schema;
-        const fields = {_id: this._id};
+        const fields = { _id: this._id };
 
-        for(let key of Object.keys(this)){
-            if (schema[key] && !(schema[key].custom && schema[key].custom === SimpleSchema.denyUntrusted) && !schema[key].denyUpdate){
+        for (const key of Object.keys(this)) {
+            if (schema[key] && !(schema[key].custom && schema[key].custom === SimpleSchema.denyUntrusted) && !schema[key].denyUpdate) {
                 fields[key] = this[key];
             }
         }
@@ -114,22 +112,22 @@ export class BaseModel {
         const schema = this._getSchema();
 
         let obj = Object.keys(this).filter(
-            (key) => key !== "_document").reduce(
+            key => key !== '_document').reduce(
                 (accumulator, key) => {
-                  accumulator[key] = this[key];
-                  return accumulator;
-                }, {}
+                    accumulator[key] = this[key]; // eslint-disable-line no-param-reassign
+                    return accumulator;
+                }, {},
             );
 
-        if(this._id){
-            let updateDiff = diff(this._document, obj);
-            if(!_.isEmpty(updateDiff)){
+        if (this._id) {
+            const updateDiff = diff(this._document, obj);
+            if (!_.isEmpty(updateDiff)) {
                 this.update(updateDiff, callback);
             } else {
                 callback && callback(null);
             }
-        }else{
-            if(Meteor.isClient && schema){
+        } else {
+            if (Meteor.isClient && schema) {
                 obj = schema.clean(obj);
             }
             this._id = this.getCollection().insert(obj, callback);
@@ -139,68 +137,14 @@ export class BaseModel {
     }
 
     update(modifier, callback) {
-        if(this._id){
+        if (this._id) {
             this.getCollection().update(this._id, modifier, callback);
         }
     }
 
-    _setProps(key, value, validationPathOnly) {
-        var current;
-        var level = this;
-        var steps = key.split(".");
-        var last = steps.pop();
-        var set = {};
-        var currentSet = set;
-
-        while(current = steps.shift()){
-            if(!validationPathOnly){
-                if(level[current]){
-                    if(!_.isObject(level[current])){
-                        throw new Meteor.Error("PropertyNotObject", current + " of " + key + " is not an object");
-                    }
-                }else{
-                    level[current] = {};
-                }
-
-                level = level[current];
-            }
-            currentSet = currentSet[current] = {};
-        }
-
-        if(!validationPathOnly) { level[last] = value; }
-
-        currentSet[last] = value;
-
-        return set;
-    }
-
-
-    _updateLocal(modifier) {
-        this.getCollection()._collection.update(this._id, modifier);
-    }
-
-    set(key, value) {
-        var context = this._getSchema().newContext();
-        var obj = {};
-
-        obj.$set = this._setProps(key, value, true);
-
-        if(context.validate(obj, {modifier:true})){
-            obj.$set = this._setProps(key, value);
-            this[key] = value;
-
-            if(Meteor.isClient){
-                this._id && this._updateLocal(obj);
-            }
-        }else{
-            throw new Meteor.Error(context.keyErrorMessage(key));
-        }
-        return this;
-    }
-
     remove(callback) {
-        if(this._id){
-            this.getCollection().remove({_id:this._id}, callback);
+        if (this._id) {
+            this.getCollection().remove({ _id: this._id }, callback);
         }
     }
 
