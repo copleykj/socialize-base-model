@@ -61,15 +61,18 @@ export class BaseModel { //eslint-disable-line
         }
     }
 
-    static appendSchema(schemaObject) {
-        const schema = new SimpleSchema(schemaObject);
+    static attachSchema(schemaInstance) {
         const collection = this.prototype.getCollection();
 
         if (collection) {
-            collection.attachSchema(schema);
+            collection.attachSchema(schemaInstance);
         } else {
             throw new Meteor.Error("Can't append schema to non existent collection. Please attach a collection to your model using `ModelName.attachCollection`");
         }
+    }
+
+    static appendSchema(schemaObject) {
+        this.attachSchema(new SimpleSchema(schemaObject));
     }
 
     _getSchema() {
