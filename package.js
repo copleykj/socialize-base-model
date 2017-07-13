@@ -7,8 +7,8 @@ Package.describe({
 });
 
 Npm.depends({
-    'rus-diff': '1.1.0',
-    'simpl-schema': '0.3.0',
+    'mongodb-diff': '0.4.4',
+    'simpl-schema': '0.3.1',
 });
 
 Package.onUse(function onUse(api) {

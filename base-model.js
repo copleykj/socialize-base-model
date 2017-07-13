@@ -2,7 +2,7 @@
 import { _ } from 'meteor/underscore';
 import { Meteor } from 'meteor/meteor';
 import SimpleSchema from 'simpl-schema';
-import { diff } from 'rus-diff';
+import { diff } from 'mongodb-diff';
 import './security.js';
 
 function extend(reciever, provider) {
