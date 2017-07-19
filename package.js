@@ -8,7 +8,6 @@ Package.describe({
 
 Npm.depends({
     'mongodb-diff': '0.4.4',
-    'simpl-schema': '0.3.1',
 });
 
 Package.onUse(function onUse(api) {
