@@ -3,6 +3,8 @@ import { _ } from 'meteor/underscore';
 import { Meteor } from 'meteor/meteor';
 import SimpleSchema from 'simpl-schema';
 import { diff } from 'mongodb-diff';
+/* eslint-enable import/no-unresolved */
+
 import './security.js';
 
 function extend(reciever, provider) {
@@ -14,7 +16,7 @@ function extend(reciever, provider) {
     }
 }
 
-export class BaseModel { //eslint-disable-line
+export class BaseModel {
     constructor(document = {}, preClean) {
         let doc = document;
 
