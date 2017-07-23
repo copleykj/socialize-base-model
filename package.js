@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+/* global Package, Npm */
 Package.describe({
     name: 'socialize:base-model',
     summary: 'A model for all other models to extend.',
