@@ -1,6 +1,6 @@
 /* eslint-disable import/no-unresolved */
 import { Tinytest } from 'meteor/tinytest';
-import BaseModel from 'meteor/socialize:base-model';
+import { BaseModel } from 'meteor/socialize:base-model';
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 
