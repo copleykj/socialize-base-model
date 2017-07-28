@@ -80,7 +80,7 @@ BooksCollection.attachSchema(BooksSchema);
 BookModel.attachCollection(BooksCollection);
 
 BooksCollection.allow({
-    insert: function(userId, book){
+    insert(userId, book) {
         /*
         book is an instance of the Book class thanks to collection
         transforms. This enables us to call it's methods to check
@@ -88,7 +88,7 @@ BooksCollection.allow({
         */
         return book.checkOwnership() && !!book.author();
     },
-    update: function(userId, book){
+    update(userId, book) {
         /*
         book is an instance of the Book class thanks to collection
         transforms. This enables us to call it's methods to check
@@ -96,7 +96,7 @@ BooksCollection.allow({
         */
         return book.checkOwnership() && !!book.author();
     },
-    remove: function(userId, book) {
+    remove(userId, book) {
         /*
         book is an instance of the Book class thanks to collection
         transforms. This enables us to call it's methods to check
@@ -138,13 +138,13 @@ var book = new Book({
 
 book.save(); //This will also clean the data before inserting so no garbage data gets through.
 ```
-We do this with code (dev tools? :-P ), but you could use a form and template events, OR you could define necessary information on your `SimpleSchema` and use `aldeed:autoform` to render a form to input this information.
+We do this with code (dev tools? :-P ), but you could use a form and template events, OR you could define necessary information on your `SimpleSchema` and use `aldeed:autoform` or `vazco:uniforms` to render a form to input this information.
 
 Now that we have data in the database we can read it out, display it, and use the methods defined on the class as helpers. Assuming we have a template with a helper that returns a cursor from `Meteor.books`, we can iterate over the cursor and the context will be an instance of the `Book` class and we can call the methods of the class such as `fullTitle`, and `author`. Awesomely, since we've also returned a instance of the `Author` class from the `author` method, we can also call it's methods as well such as `author.fullName` which could concatenate the authors first and last name and return a single string.
 
 ```html
 <h1>Book List</h1>
-{{#each books}}{{--! --}}
+{{#each books}}
     <p>Author's Name: {{author.fullName}}<p>
     <p>{{fullTitle}}</p>
 {{/each}}
