@@ -13,22 +13,12 @@ if(myBook.checkOwnership()){
 }
 ```
 
-__set__ - update a property of the underlying data. This also updates the underlying minimongo collection if a record exists, and will reflect the change on the page if displayed there. This however does not save the data to the server side database. To save to server call the `save` method on the instance.
-
->Note: __*If using this in a reactive context such as the data context of a template and modifying in an event attached to that template, you will need to save a copy to the template and modify that as modifying the underlying minimongo will cause a recomputation and wipe out any changes to the instance that was the data context*__
-
-```javascript
-var book = Meteor.books.findOne();
-
-book.set("title", "Diary of a Wimpy Kid");
-```
-
 __save__ - Save instance to the database. If the instance was not previously saved to the database this will perform an insert. Otherwise it will diff the changes and update the database using a $set and update.
 
 ```javascript
 var book = Meteor.books.findOne();
 
-book.set("title", "To Kill a Mockingbird");
+book.title = 'To Kill a Mockingbird';
 
 book.save();
 ```
@@ -36,7 +26,9 @@ book.save();
 __update(modifier)__ - Update the record for the instance making changes specified by the modifier. In most cases it'll be easier to use `save` but this is here if needed.
 
 ```javascript
-Meteor.books.findOne().update({$set:{title:"Meteor For Dummies"}});
+Meteor.books.findOne().update({
+    $set: { title:'Meteor For Dummies' }
+});
 ```
 
 __remove__ - Delete the database record for the instance.
@@ -55,27 +47,28 @@ Meteor.books.findOne().getCollection();
 __getCollectionName__ - returns a string specifying the name given to the collection when it was instantiated.
 
 ```javascript
-Meteor.books.findOne().getCollectionName(); -> "books"
+Meteor.books.findOne().getCollectionName(); //-> 'books'
 ```
+
+__getUpdatableFields()__ - returns an object of values for all fields on the model that are allowed to be updated. This is particularly useful for passing to `vazco:uniforms`
 
 ## Static Methods ##
 
 __attachCollection(Mongo.Collection)__ - Attach the collection to the model so that save/update/delete know which collection to modify. If you
 
-__appendSchema(SchemaObject)__ - Create a schema or add to the schema if one already exists. `SchemaObject` is the same as you would pass to `new SimpleSchema(SchemaObject)`.
+__attachSchema(SchemaInstance)__ - Create a schema or add to the schema if one already exists. `SchemaInstance` is an instance of `SimpleSchema`.
 
 ```javascript
-Author.appendSchema({
-    "firstName":{
+Author.attachSchema(new SimpleSchema({
+    firstName: {
         type: String,
         max: 20
     },
-    "lastName": {
+    lastName: {
         type: String,
         max: 20
-    }
-});
+    },
+}));
 ```
 
-
-__createEmpty(id)__ - Returns an instance with only the id field set as the specified id {id:"8D7XmQb3KEpGqc3AD"}. Handy for when you already have the id of a record and want to do an update to the collection but don't want to do a full database call to get a populated instance.
+__createEmpty(id)__ - Returns an instance with only the id field set as the specified id {id:'8D7XmQb3KEpGqc3AD'}. Handy for when you already have the id of a record and want to do an update to the collection but don't want to do a full database call to get a populated instance.
