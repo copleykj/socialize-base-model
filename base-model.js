@@ -118,11 +118,11 @@ export class BaseModel {
 
         let obj = Object.keys(this).filter(
             key => key !== '_document').reduce(
-                (accumulator, key) => {
-                    accumulator[key] = this[key]; // eslint-disable-line no-param-reassign
-                    return accumulator;
-                }, {},
-            );
+            (accumulator, key) => {
+                accumulator[key] = this[key]; // eslint-disable-line no-param-reassign
+                return accumulator;
+            }, {},
+        );
 
         if (this._id) {
             const updateDiff = diff(this._document, obj);
@@ -133,7 +133,13 @@ export class BaseModel {
             }
         } else {
             if (Meteor.isClient && schema) {
-                obj = schema.clean(obj);
+                obj = schema.clean(obj, {
+                    extendAutoValueContext: {
+                        isInsert: true,
+                        userId: Meteor.userId(),
+                    },
+                });
+                console.log(obj);
             }
             this._id = this.getCollection().insert(obj, callback);
         }
@@ -152,5 +158,4 @@ export class BaseModel {
             this.getCollection().remove({ _id: this._id }, callback);
         }
     }
-
 }
