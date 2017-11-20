@@ -20,11 +20,13 @@ Package.onUse(function onUse(api) {
         'matb33:collection-hooks@0.8.4',
     ]);
 
+    api.use('cultofcoders:redis-oplog', { weak: true });
+
     api.imply(['meteor', 'mongo', 'underscore', 'ecmascript']);
 
     api.imply([
         'aldeed:collection2-core', 'aldeed:schema-index', 'aldeed:schema-deny',
-        'matb33:collection-hooks',
+        'matb33:collection-hooks', 'cultofcoders:redis-oplog',
     ]);
 
     api.mainModule('base-model.js');
