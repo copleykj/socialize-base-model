@@ -133,13 +133,7 @@ export class BaseModel {
             }
         } else {
             if (Meteor.isClient && schema) {
-                obj = schema.clean(obj, {
-                    extendAutoValueContext: {
-                        isInsert: true,
-                        userId: Meteor.userId(),
-                    },
-                });
-                console.log(obj);
+                obj = schema.clean(obj);
             }
             this._id = this.getCollection().insert(obj, callback);
         }
