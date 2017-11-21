@@ -26,7 +26,7 @@ Package.onUse(function onUse(api) {
 
     api.imply([
         'aldeed:collection2-core', 'aldeed:schema-index', 'aldeed:schema-deny',
-        'matb33:collection-hooks', 'cultofcoders:redis-oplog',
+        'matb33:collection-hooks',
     ]);
 
     api.mainModule('base-model.js');
