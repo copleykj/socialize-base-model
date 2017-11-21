@@ -19,13 +19,13 @@ function extend(reciever, provider) {
 export class BaseModel {
     constructor(document = {}, preClean) {
         let doc = document;
-
-        delete doc._document;
         if (preClean) {
             doc = this._getSchema().clean(doc);
         }
         extend(this, doc);
-        this._document = doc;
+        this.getDocument = function getDocument() {
+            return document;
+        };
     }
 
     static createEmpty(_id) {
@@ -116,8 +116,7 @@ export class BaseModel {
     save(callback) {
         const schema = this._getSchema();
 
-        let obj = Object.keys(this).filter(
-            key => key !== '_document').reduce(
+        let obj = Object.keys(this).reduce(
             (accumulator, key) => {
                 accumulator[key] = this[key]; // eslint-disable-line no-param-reassign
                 return accumulator;
@@ -125,7 +124,7 @@ export class BaseModel {
         );
 
         if (this._id) {
-            const updateDiff = diff(this._document, obj);
+            const updateDiff = diff(this.getDocument(), obj);
             if (!_.isEmpty(updateDiff)) {
                 this.update(updateDiff, callback);
             } else {
