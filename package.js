@@ -2,7 +2,7 @@
 Package.describe({
     name: 'socialize:base-model',
     summary: 'A model for all other models to extend.',
-    version: '1.1.0',
+    version: '1.1.1',
     git: 'https://github.com/copleykj/socialize-base-model.git',
 });
 
@@ -16,7 +16,7 @@ Package.onUse(function onUse(api) {
     api.use(['meteor', 'mongo', 'underscore', 'ecmascript']);
 
     api.use([
-        'aldeed:collection2-core@2.0.1', 'aldeed:schema-index@2.0.0', 'aldeed:schema-deny@2.0.0',
+        'aldeed:collection2-core@2.0.4', 'aldeed:schema-index@2.1.1', 'aldeed:schema-deny@2.0.1',
         'matb33:collection-hooks@0.8.4',
     ]);
 
@@ -36,7 +36,7 @@ Package.onTest(function onTest(api) {
     api.use(['tinytest', 'meteor', 'mongo', 'underscore', 'ecmascript']);
 
     api.use([
-        'aldeed:collection2-core@2.0.1', 'matb33:collection-hooks@0.8.4',
+        'aldeed:collection2-core@2.0.4', 'matb33:collection-hooks@0.8.4',
         'socialize:base-model',
     ]);
 
