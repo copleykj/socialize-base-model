@@ -15,12 +15,12 @@ Package.onUse(function onUse(api) {
 
     api.use(['meteor', 'mongo', 'underscore', 'ecmascript']);
 
+    api.use('cultofcoders:redis-oplog', { weak: true });
+
     api.use([
         'aldeed:collection2-core@2.0.4', 'aldeed:schema-index@2.1.1', 'aldeed:schema-deny@2.0.1',
         'matb33:collection-hooks@0.8.4', 'socialize:server-time@1.0.0',
     ]);
-
-    api.use('cultofcoders:redis-oplog', { weak: true });
 
     api.imply(['meteor', 'mongo', 'underscore', 'ecmascript']);
 
