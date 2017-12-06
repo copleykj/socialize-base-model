@@ -24,7 +24,7 @@ export class BaseModel {
         }
         extend(this, doc);
         this.getDocument = function getDocument() {
-            return document;
+            return doc;
         };
     }
 
