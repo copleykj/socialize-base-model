@@ -56,8 +56,6 @@ export class BaseModel {
             return collection;
         };
 
-        Meteor[collection._name] = collection;
-
         if (transform) {
             this.updateTransformFunction();
         }
