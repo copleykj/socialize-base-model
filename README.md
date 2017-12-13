@@ -161,6 +161,8 @@ There could be some things that I guess might not be so obvious. I'll try to lis
 
 1. You must publish data for related models.. If `book.author()` returns a model of author that doesn't have data published for it, then it will return undefined. This is just how Meteor works.
 
+For a more in depth explanation of how to use this package see [API.md](API.md)
+
 [1]: https://github.com/aldeed/meteor-simple-schema
 [2]: https://www.discovermeteor.com/blog/allow-deny-challenge-results/#results
 [3]: https://atmospherejs.com/socialize
