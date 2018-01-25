@@ -1,6 +1,6 @@
 # Base Model #
 
-Provides an extensible base from which to build your models. The [Socialize][3] package set is built upon this package.
+This package provides an extensible, yet opinionated, base from which to build your models. It uses simpl-schema for data integrity, allow/deny for simple security, and collection-hooks for actions that need to be completed before or after CRUD operations complete. The [Socialize][3] package set is built upon this package.
 
 ## Supporting the Project ##
 In the spirit of keeping this and all of the packages in the [Socialize](https://atmospherejs.com/socialize) set alive, I ask that if you find this package useful, please donate to it's development.
