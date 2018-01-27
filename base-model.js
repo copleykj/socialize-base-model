@@ -1,5 +1,4 @@
 /* eslint-disable import/no-unresolved */
-import { _ } from 'meteor/underscore';
 import { Meteor } from 'meteor/meteor';
 import SimpleSchema from 'simpl-schema';
 import { diff } from 'mongodb-diff';
@@ -34,16 +33,19 @@ export class BaseModel {
 
     static methods(methodMap) {
         const self = this;
-        if (_.isObject(methodMap)) {
-            _.each(methodMap, function eachMapMethod(method, name) {
-                if (_.isFunction(method)) {
-                    if (!self.prototype[name]) {
-                        self.prototype[name] = method;
+        if ((typeof methodMap === 'function' || typeof methodMap === 'object') && !!methodMap) {
+            const keys = Object.keys(methodMap);
+            for (let i = 0, length = keys.length; i < length; i++) {
+                let method = methodMap[keys[i]];
+
+                if (typeof method === 'function') {
+                    if (!self.prototype[keys[i]]) {
+                      self.prototype[keys[i]] = method;
                     } else {
-                        throw new Meteor.Error('existent-method', `The method ${name} already exists.`);
+                        throw new Meteor.Error('existent-method', `The method ${keys[i]} already exists.`);
                     }
                 }
-            });
+            }
         }
     }
 
@@ -123,7 +125,7 @@ export class BaseModel {
 
         if (this._id) {
             const updateDiff = diff(this.getDocument(), obj);
-            if (!_.isEmpty(updateDiff)) {
+            if (updateDiff !== null && updateDiff.length > 0) {
                 this.update(updateDiff, callback);
             } else {
                 callback && callback(null);
