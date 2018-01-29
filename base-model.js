@@ -36,11 +36,11 @@ export class BaseModel {
         if ((typeof methodMap === 'function' || typeof methodMap === 'object') && !!methodMap) {
             const keys = Object.keys(methodMap);
             for (let i = 0, length = keys.length; i < length; i++) {
-                let method = methodMap[keys[i]];
+                const method = methodMap[keys[i]];
 
                 if (typeof method === 'function') {
                     if (!self.prototype[keys[i]]) {
-                      self.prototype[keys[i]] = method;
+                        self.prototype[keys[i]] = method;
                     } else {
                         throw new Meteor.Error('existent-method', `The method ${keys[i]} already exists.`);
                     }
