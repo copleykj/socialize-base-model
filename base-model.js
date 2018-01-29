@@ -125,7 +125,7 @@ export class BaseModel {
 
         if (this._id) {
             const updateDiff = diff(this.getDocument(), obj);
-            if (updateDiff !== null && updateDiff.length > 0) {
+            if (updateDiff && Object.keys(updateDiff).length !== 0) {
                 this.update(updateDiff, callback);
             } else {
                 callback && callback(null);
