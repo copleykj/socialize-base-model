@@ -1,11 +1,11 @@
 # Base Model #
 
-Provides an extensible base from which to build your models. The [Socialize][3] package set is built upon this package.
+This package provides an extensible, yet opinionated, base from which to build your models. It uses simpl-schema for data integrity, allow/deny for simple security, and collection-hooks for actions that need to be completed before or after CRUD operations complete. The [Socialize][3] package set is built upon this package.
 
 ## Supporting the Project ##
 In the spirit of keeping this and all of the packages in the [Socialize](https://atmospherejs.com/socialize) set alive, I ask that if you find this package useful, please donate to it's development.
 
-[Bitcoin](https://www.coinbase.com/checkouts/4a52f56a76e565c552b6ecf118461287) / [Patreon](https://www.patreon.com/user?u=4866588) / [Paypal](https://www.paypal.me/copleykj)
+Litecoin: LXLBD9sC5dV79eQkwj7tFusUHvJA5nhuD3 / [Patreon](https://www.patreon.com/user?u=4866588) / [Paypal](https://www.paypal.me/copleykj)
 
 ## Installation ##
 
@@ -160,6 +160,8 @@ This would yield HTML like so..
 There could be some things that I guess might not be so obvious. I'll try to list them here as they come up.
 
 1. You must publish data for related models.. If `book.author()` returns a model of author that doesn't have data published for it, then it will return undefined. This is just how Meteor works.
+
+For a more in depth explanation of how to use this package see [API.md](API.md)
 
 [1]: https://github.com/aldeed/meteor-simple-schema
 [2]: https://www.discovermeteor.com/blog/allow-deny-challenge-results/#results
