@@ -54,9 +54,13 @@ __getUpdatableFields()__ - returns an object of values for all fields on the mod
 
 ## Static Methods ##
 
-__attachCollection(Mongo.Collection)__ - Attach the collection to the model so that save/update/delete know which collection to modify. If you
+__attachCollection(Mongo.Collection)__ - Attach the collection to the model so that save/update/delete know which collection to modify.
 
-__attachSchema(SchemaInstance)__ - Create a schema or add to the schema if one already exists. `SchemaInstance` is an instance of `SimpleSchema`.
+```javascript
+Author.attachCollection(AuthorsCollection);
+```
+
+__attachSchema(SchemaInstance)__ - Attach a schema to the currently attached collection or add to the schema if one already exists. `SchemaInstance` is an instance of `SimpleSchema`.
 
 ```javascript
 Author.attachSchema(new SimpleSchema({
@@ -71,4 +75,32 @@ Author.attachSchema(new SimpleSchema({
 }));
 ```
 
-__createEmpty(id)__ - Returns an instance with only the id field set as the specified id {id:'8D7XmQb3KEpGqc3AD'}. Handy for when you already have the id of a record and want to do an update to the collection but don't want to do a full database call to get a populated instance.
+__methods(methodMap)__ - Takes an object of functions and attaches each function to the prototype for the class. This is useful in rare cases where you might not want to extend the class directly.
+
+```javascript
+Author.methods({
+    fullName() {
+        return `${this.firstName} ${this.lastName}`;
+    }
+    books() {
+        return BooksCollection.find({ authorId: this._id });
+    }
+})
+```
+
+__updateTransformFunction__ - Cause the collection transform of the currently attached collection to return instances of the current class. When extending another model that already has a collection attached, you will need to call this to cause `find` and `findOne` to return instances of the new model.
+
+```javascript
+class MyAwesomeBook extends Book {
+
+}
+MyAwesomeBook.updateTransformFunction();
+```
+
+__createEmpty(id)__ - Avoids a database lookup by creating an instance with only the id field set as the specified id `{id:'8D7XmQb3KEpGqc3AD'}`. All methods are available on the instance and so it is handy for when you already have the id of a record and want to use a method that only requires the `_id` to do it's work
+
+```javascript
+Author.createEmpty("9zrP3yqna5GLH5mH6");
+
+Author.books();
+```
