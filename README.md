@@ -56,10 +56,6 @@ const BooksSchema = new SimpleSchema({
 });
 
 class BookModel extends BaseModel {
-    constructor(document) {
-        super(document);  //Must call super passing in the document.
-    }
-
     owner() {
         return Meteor.users.findOne(this.userId);
     }
