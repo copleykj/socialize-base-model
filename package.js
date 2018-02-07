@@ -15,7 +15,7 @@ Package.onUse(function onUse(api) {
 
     api.use(['meteor', 'mongo', 'ecmascript']);
 
-    api.use('cultofcoders:redis-oplog', { weak: true });
+    api.use('cultofcoders:redis-oplog@1.2.5', { weak: true });
 
     api.use([
         'aldeed:collection2@3.0.0', 'aldeed:schema-index@3.0.0', 'aldeed:schema-deny@3.0.0',
