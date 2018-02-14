@@ -118,7 +118,7 @@ export class BaseModel {
 
         let obj = Object.keys(this).reduce(
             (accumulator, key) => {
-                accumulator[key] = this[key]; // eslint-disable-line no-param-reassign
+                if (key !== 'getDocument') accumulator[key] = this[key]; // eslint-disable-line no-param-reassign
                 return accumulator;
             }, {},
         );
