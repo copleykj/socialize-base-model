@@ -29,7 +29,7 @@ Package.onUse(function onUse(api) {
         'matb33:collection-hooks', 'socialize:server-time',
     ]);
 
-    api.mainModule('base-model.js');
+    api.mainModule('entry-meteor.js');
 });
 
 Package.onTest(function onTest(api) {

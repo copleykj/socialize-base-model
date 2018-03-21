@@ -7,12 +7,25 @@ In the spirit of keeping this and all of the packages in the [Socialize](https:/
 
 Litecoin: LXLBD9sC5dV79eQkwj7tFusUHvJA5nhuD3 / [Patreon](https://www.patreon.com/user?u=4866588) / [Paypal](https://www.paypal.me/copleykj)
 
-## Installation ##
+## Meteor Installation ##
 
 ```sh
 $ meteor install socialize:base-model
 $ meteor npm install --save simpl-schema
 ```
+
+## React Native Installation ##
+
+```sh
+$ npm install --save @socialize/base-model react-native-meteor-collection2
+```
+
+> **Note**
+  When using with React Native, you'll need to connect to a server which hosts the server side Meteor code for your app using `Meteor.Connect` as per the [react-native-meteor](https://www.npmjs.com/package/react-native-meteor#example-usage) documentation.
+
+ ```javascript
+Meteor.connect('ws://192.168.X.X:3000/websocket');
+ ```
 
 ## Basic Usage ##
 
@@ -20,16 +33,28 @@ For save/update/delete you will need a collection attached to the Class which ha
 
 Lets get started with a quick example by Modeling a Book.
 
+Depending on which platform you are on, you'll need to import things, and instantiate your Collections slightly different.
+
 ```javascript
-import BaseModel from 'meteor/socialize:base-model';
+// For meteor
+import { BaseModel } from 'meteor/socialize:base-model';
 import { Mongo } from 'meteor/mongo';
+
+// For React Native
+import BaseModel from '@socialize/base-model';
+import Collection from 'react-native-meteor-collection2';
+
+// Both Meteor and React Native
 import SimpleSchema from 'simpl-schema';
 
 //We assume that another model of an Author exists so we can import its collection here..
 import { AuthorsCollection }  from "/models/Author";
 
-
+//In Meteor Collection is scoped to Mongo
 const BooksCollection = new Mongo.Collection("books");
+
+//In React Native Collection is imported from react-native-meteor-collection2
+const BooksCollection = new Collection("books");
 
 const BooksSchema = new SimpleSchema({
     "userId":{
@@ -75,6 +100,7 @@ BooksCollection.attachSchema(BooksSchema);
 //Attach the collection to the model so we can save/update/delete
 BookModel.attachCollection(BooksCollection);
 
+// This is Meteor server code and should not be added on React Native
 BooksCollection.allow({
     insert(userId, book) {
         /*
@@ -111,8 +137,6 @@ Let's examine what we have done here.
 4. Define a `Book` class that extends `BaseModel` making sure to call `super(document)`
 5. Attach the collection to the `Book` class enabling instances of the class to execute save/update/remove operations
 6. Specify allow rules for the collection as a final layer of security thus allowing total client side manipulation.
-
-Take note that attaching the collection to the Class will also assign a reference to `Meteor` at `Meteor["collectionName"]`, so with the above code we would have a reference to `BooksCollection` assigned to `Meteor.books`.
 
 
 Now we are all set up to use the new `Book` class, and since we've properly secured our database writes through a combination of [SimpleSchema][1] and allow rules, we can now do all of our database operations using client side database methods.
