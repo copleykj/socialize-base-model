@@ -21,7 +21,8 @@ $ npm install --save @socialize/base-model react-native-meteor-collection2
 ```
 
 > **Note**
-  When using with React Native, you'll need to connect to a server which hosts the server side Meteor code for your app using `Meteor.Connect` as per the [react-native-meteor](https://www.npmjs.com/package/react-native-meteor#example-usage) documentation.
+
+>  When using with React Native, you'll need to connect to a server which hosts the server side Meteor code for your app using `Meteor.Connect` as per the [react-native-meteor](https://www.npmjs.com/package/react-native-meteor#example-usage) documentation.
 
  ```javascript
 Meteor.connect('ws://192.168.X.X:3000/websocket');
