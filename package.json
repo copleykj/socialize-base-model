@@ -25,6 +25,6 @@
         "@socialize/react-native-meteor-collection2": "^1.0.1"
     },
     "peerDependencies": {
-        "simpl-schema": "^1.4.2",
+        "simpl-schema": "^1.4.2"
     }
 }
