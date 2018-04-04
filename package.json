@@ -1,6 +1,6 @@
 {
     "name": "@socialize/base-model",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "Meteor's socialize:base-model package ported for React Native",
     "main": "entry-rn.js",
     "scripts": {
@@ -22,6 +22,7 @@
     "homepage": "https://github.com/copleykj/socialize-base-model#readme",
     "dependencies": {
         "mongodb-diff": "^0.4.4",
-        "@socialize/react-native-meteor-collection2": "^1.0.2"
+        "@socialize/react-native-meteor-collection2": "^1.0.2",
+        "@socialize/server-time": "^0.0.1"
     }
 }
