@@ -2,6 +2,8 @@
 
 This package provides an extensible, yet opinionated, base from which to build your models. It uses simpl-schema for data integrity, allow/deny for simple security, and collection-hooks for actions that need to be completed before or after CRUD operations complete. The [Socialize][3] package set is built upon this package.
 
+>This is a [Meteor][meteor] package with part of it's code published as a companion NPM package made to work with React Native. This allows your Meteor and React Native projects that use this package to share code between them to give you a competitive advantage when bringing your mobile and web application to market.
+
 <!-- TOC START min:1 max:3 link:true update:true -->
 - [Base Model](#base-model)
   - [Supporting the Project](#supporting-the-project)
