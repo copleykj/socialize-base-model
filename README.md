@@ -1,6 +1,6 @@
 # Base Model
 
-This package provides an extensible, yet opinionated, base from which to build your models. It uses simpl-schema for data integrity, allow/deny for simple security, and collection-hooks for actions that need to be completed before or after CRUD operations complete. The [Socialize][3] package set is built upon this package.
+This package provides an extensible, yet opinionated, base from which to build your models. It uses simpl-schema for data integrity, allow/deny for simple security, and collection-hooks for actions that need to be completed before or after CRUD operations complete. The [Socialize][socialize] package set is built upon this package.
 
 >This is a [Meteor][meteor] package with part of it's code published as a companion NPM package made to work with React Native. This allows your Meteor and React Native projects that use this package to share code between them to give you a competitive advantage when bringing your mobile and web application to market.
 
@@ -17,7 +17,7 @@ This package provides an extensible, yet opinionated, base from which to build y
 
 
 ## Supporting the Project
-In the spirit of keeping this and all of the packages in the [Socialize](https://atmospherejs.com/socialize) set alive, I ask that if you find this package useful, please donate to it's development.
+In the spirit of keeping this and all of the packages in the [Socialize][socialize] set alive, I ask that if you find this package useful, please donate to it's development.
 
 Litecoin: LXLBD9sC5dV79eQkwj7tFusUHvJA5nhuD3 / [Patreon](https://www.patreon.com/user?u=4866588) / [Paypal](https://www.paypal.me/copleykj)
 
@@ -44,7 +44,7 @@ Meteor.connect('ws://192.168.X.X:3000/websocket');
 
 ## Basic Usage
 
-For save/update/delete you will need a collection attached to the Class which has a SimpleSchema attached to it. This is to ensure that you think about securing your models. Properly secured models can execute database operations completely client side without the need to manually define Meteor Methods. If you aren't familiar with Simple Schema, you can find the documentation [Here][1].
+For save/update/delete you will need a collection attached to the Class which has a SimpleSchema attached to it. This is to ensure that you think about securing your models. Properly secured models can execute database operations completely client side without the need to manually define Meteor Methods. If you aren't familiar with Simple Schema, you can find the documentation [Here][simple-schema].
 
 Lets get started with a quick example by Modeling a Book.
 
@@ -159,9 +159,9 @@ Let's examine what we have done here.
 6. Specify allow rules for the collection as a final layer of security thus allowing total client side manipulation.
 
 
-Now we are all set up to use the new `Book` class, and since we've properly secured our database writes through a combination of [SimpleSchema][1] and allow rules, we can now do all of our database operations using client side database methods.
+Now we are all set up to use the new `Book` class, and since we've properly secured our database writes through a combination of [SimpleSchema][simple-schema] and allow rules, we can now do all of our database operations using client side database methods.
 
->**Don't believe client side only database is possible?** Check the [results][2] of Discover Meteor's allow/deny security challenge and take note that it mentions issues with other submissions, but you'll only find *Kelly Copley* listed under people who got it right. Guess how I secured my solution ;-).
+>**Don't believe client side only database is possible?** Check the [results][allow-deny] of Discover Meteor's allow/deny security challenge and take note that it mentions issues with other submissions, but you'll only find *Kelly Copley* listed under people who got it right. Guess how I secured my solution ;-).
 
 With this in mind, lets insert a book in to the database client side.
 
@@ -203,6 +203,7 @@ There could be some things that I guess might not be so obvious. I'll try to lis
 
 For a more in depth explanation of how to use this package see [API.md](API.md)
 
-[1]: https://github.com/aldeed/meteor-simple-schema
-[2]: https://www.discovermeteor.com/blog/allow-deny-challenge-results/#results
-[3]: https://atmospherejs.com/socialize
+[simple-schema]: https://github.com/aldeed/meteor-simple-schema
+[allow-deny]: https://www.discovermeteor.com/blog/allow-deny-challenge-results/#results
+[socialize]: https://atmospherejs.com/socialize
+[meteor]: https://meteor.com
