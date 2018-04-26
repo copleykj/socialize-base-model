@@ -1,34 +1,46 @@
-# Base Model #
+# Base Model
 
 This package provides an extensible, yet opinionated, base from which to build your models. It uses simpl-schema for data integrity, allow/deny for simple security, and collection-hooks for actions that need to be completed before or after CRUD operations complete. The [Socialize][3] package set is built upon this package.
 
-## Supporting the Project ##
+<!-- TOC START min:1 max:3 link:true update:true -->
+- [Base Model](#base-model)
+  - [Supporting the Project](#supporting-the-project)
+  - [Meteor Installation](#meteor-installation)
+  - [React Native Installation](#react-native-installation)
+  - [Basic Usage](#basic-usage)
+  - [Caveats](#caveats)
+
+<!-- TOC END -->
+
+
+
+## Supporting the Project
 In the spirit of keeping this and all of the packages in the [Socialize](https://atmospherejs.com/socialize) set alive, I ask that if you find this package useful, please donate to it's development.
 
 Litecoin: LXLBD9sC5dV79eQkwj7tFusUHvJA5nhuD3 / [Patreon](https://www.patreon.com/user?u=4866588) / [Paypal](https://www.paypal.me/copleykj)
 
-## Meteor Installation ##
+## Meteor Installation
 
 ```sh
 $ meteor install socialize:base-model
 $ meteor npm install --save simpl-schema
 ```
 
-## React Native Installation ##
+## React Native Installation
 
 ```sh
 $ npm install --save @socialize/base-model react-native-meteor-collection2
 ```
 
 > **Note**
-
->  When using with React Native, you'll need to connect to a server which hosts the server side Meteor code for your app using `Meteor.connect` as per the [react-native-meteor](https://www.npmjs.com/package/react-native-meteor#example-usage) documentation.
+>
+>  When using with React Native, you'll need to connect to a server which hosts the server side Meteor code for your app using `Meteor.connect` as per the [@socialize/react-native-meteor](https://www.npmjs.com/package/@socialize/react-native-meteor#example-usage) documentation.
 
  ```javascript
 Meteor.connect('ws://192.168.X.X:3000/websocket');
  ```
 
-## Basic Usage ##
+## Basic Usage
 
 For save/update/delete you will need a collection attached to the Class which has a SimpleSchema attached to it. This is to ensure that you think about securing your models. Properly secured models can execute database operations completely client side without the need to manually define Meteor Methods. If you aren't familiar with Simple Schema, you can find the documentation [Here][1].
 
@@ -40,10 +52,15 @@ Depending on which platform you are on, you'll need to import things, and instan
 // For meteor
 import { BaseModel } from 'meteor/socialize:base-model';
 import { Mongo } from 'meteor/mongo';
+```
 
+```javascript
 // For React Native
 import BaseModel from '@socialize/base-model';
 import Collection from 'react-native-meteor-collection2';
+```
+
+```javascript
 
 // Both Meteor and React Native
 import SimpleSchema from 'simpl-schema';
@@ -177,7 +194,7 @@ This would yield HTML like so..
 <p>Captain Underpants: and The Sensational Saga of Sir-Stinks-A-Lot </p>
 ```
 
-## Caveats ##
+## Caveats
 There could be some things that I guess might not be so obvious. I'll try to list them here as they come up.
 
 1. You must publish data for related models.. If `book.author()` returns a model of author that doesn't have data published for it, then it will return undefined. This is just how Meteor works.
