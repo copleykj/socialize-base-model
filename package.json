@@ -1,11 +1,28 @@
 {
-  "devDependencies": {
-    "babel-eslint": "^7.2.3",
-    "eslint": "^3.19.0",
-    "eslint-config-airbnb": "^15.0.1",
-    "eslint-import-resolver-meteor": "^0.4.0",
-    "eslint-plugin-import": "^2.3.0",
-    "eslint-plugin-jsx-a11y": "^5.0.3",
-    "eslint-plugin-react": "^7.1.0"
-  }
+    "name": "@socialize/base-model",
+    "version": "1.1.0",
+    "description": "Meteor's socialize:base-model package ported for React Native",
+    "main": "entry-rn.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/copleykj/socialize-base-model.git"
+    },
+    "keywords": [
+        "meteor",
+        "react-native"
+    ],
+    "author": "Kelly Copley <copleykj@gmail.com>",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/copleykj/socialize-base-model/issues"
+    },
+    "homepage": "https://github.com/copleykj/socialize-base-model#readme",
+    "dependencies": {
+        "mongodb-diff": "^0.4.4",
+        "@socialize/react-native-meteor-collection2": "^1.1.0",
+        "@socialize/server-time": "^1.0.0"
+    }
 }

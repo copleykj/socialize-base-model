@@ -1,35 +1,80 @@
-# Base Model #
+# Base Model
 
-This package provides an extensible, yet opinionated, base from which to build your models. It uses simpl-schema for data integrity, allow/deny for simple security, and collection-hooks for actions that need to be completed before or after CRUD operations complete. The [Socialize][3] package set is built upon this package.
+This package provides an extensible, yet opinionated, base from which to build your models. It uses simpl-schema for data integrity, allow/deny for simple security, and collection-hooks for actions that need to be completed before or after CRUD operations complete. The [Socialize][socialize] package set is built upon this package.
 
-## Supporting the Project ##
-In the spirit of keeping this and all of the packages in the [Socialize](https://atmospherejs.com/socialize) set alive, I ask that if you find this package useful, please donate to it's development.
+>This is a [Meteor][meteor] package with part of it's code published as a companion NPM package made to work with React Native. This allows your Meteor and React Native projects that use this package to share code between them to give you a competitive advantage when bringing your mobile and web application to market.
+
+<!-- TOC START min:1 max:3 link:true update:true -->
+- [Base Model](#base-model)
+  - [Supporting the Project](#supporting-the-project)
+  - [Meteor Installation](#meteor-installation)
+  - [React Native Installation](#react-native-installation)
+  - [Basic Usage](#basic-usage)
+  - [Caveats](#caveats)
+
+<!-- TOC END -->
+
+
+
+## Supporting the Project
+In the spirit of keeping this and all of the packages in the [Socialize][socialize] set alive, I ask that if you find this package useful, please donate to it's development.
 
 Litecoin: LXLBD9sC5dV79eQkwj7tFusUHvJA5nhuD3 / [Patreon](https://www.patreon.com/user?u=4866588) / [Paypal](https://www.paypal.me/copleykj)
 
-## Installation ##
+## Meteor Installation
 
 ```sh
 $ meteor install socialize:base-model
 $ meteor npm install --save simpl-schema
 ```
 
-## Basic Usage ##
+## React Native Installation
 
-For save/update/delete you will need a collection attached to the Class which has a SimpleSchema attached to it. This is to ensure that you think about securing your models. Properly secured models can execute database operations completely client side without the need to manually define Meteor Methods. If you aren't familiar with Simple Schema, you can find the documentation [Here][1].
+```sh
+$ npm install --save @socialize/base-model react-native-meteor-collection2
+```
+
+> **Note**
+>
+>  When using with React Native, you'll need to connect to a server which hosts the server side Meteor code for your app using `Meteor.connect` as per the [@socialize/react-native-meteor](https://www.npmjs.com/package/@socialize/react-native-meteor#example-usage) documentation.
+
+ ```javascript
+Meteor.connect('ws://192.168.X.X:3000/websocket');
+ ```
+
+## Basic Usage
+
+For save/update/delete you will need a collection attached to the Class which has a SimpleSchema attached to it. This is to ensure that you think about securing your models. Properly secured models can execute database operations completely client side without the need to manually define Meteor Methods. If you aren't familiar with Simple Schema, you can find the documentation [Here][simple-schema].
 
 Lets get started with a quick example by Modeling a Book.
 
+Depending on which platform you are on, you'll need to import things, and instantiate your Collections slightly different.
+
 ```javascript
-import BaseModel from 'meteor/socialize:base-model';
+// For meteor
+import { BaseModel } from 'meteor/socialize:base-model';
 import { Mongo } from 'meteor/mongo';
+```
+
+```javascript
+// For React Native
+import BaseModel from '@socialize/base-model';
+import Collection from 'react-native-meteor-collection2';
+```
+
+```javascript
+
+// Both Meteor and React Native
 import SimpleSchema from 'simpl-schema';
 
 //We assume that another model of an Author exists so we can import its collection here..
 import { AuthorsCollection }  from "/models/Author";
 
-
+//In Meteor Collection is scoped to Mongo
 const BooksCollection = new Mongo.Collection("books");
+
+//In React Native Collection is imported from react-native-meteor-collection2
+const BooksCollection = new Collection("books");
 
 const BooksSchema = new SimpleSchema({
     "userId":{
@@ -75,6 +120,7 @@ BooksCollection.attachSchema(BooksSchema);
 //Attach the collection to the model so we can save/update/delete
 BookModel.attachCollection(BooksCollection);
 
+// This is Meteor server code and should not be added on React Native
 BooksCollection.allow({
     insert(userId, book) {
         /*
@@ -112,12 +158,10 @@ Let's examine what we have done here.
 5. Attach the collection to the `Book` class enabling instances of the class to execute save/update/remove operations
 6. Specify allow rules for the collection as a final layer of security thus allowing total client side manipulation.
 
-Take note that attaching the collection to the Class will also assign a reference to `Meteor` at `Meteor["collectionName"]`, so with the above code we would have a reference to `BooksCollection` assigned to `Meteor.books`.
 
+Now we are all set up to use the new `Book` class, and since we've properly secured our database writes through a combination of [SimpleSchema][simple-schema] and allow rules, we can now do all of our database operations using client side database methods.
 
-Now we are all set up to use the new `Book` class, and since we've properly secured our database writes through a combination of [SimpleSchema][1] and allow rules, we can now do all of our database operations using client side database methods.
-
->**Don't believe client side only database is possible?** Check the [results][2] of Discover Meteor's allow/deny security challenge and take note that it mentions issues with other submissions, but you'll only find *Kelly Copley* listed under people who got it right. Guess how I secured my solution ;-).
+>**Don't believe client side only database is possible?** Check the [results][allow-deny] of Discover Meteor's allow/deny security challenge and take note that it mentions issues with other submissions, but you'll only find *Kelly Copley* listed under people who got it right. Guess how I secured my solution ;-).
 
 With this in mind, lets insert a book in to the database client side.
 
@@ -152,13 +196,15 @@ This would yield HTML like so..
 <p>Captain Underpants: and The Sensational Saga of Sir-Stinks-A-Lot </p>
 ```
 
-## Caveats ##
+## Caveats
 There could be some things that I guess might not be so obvious. I'll try to list them here as they come up.
 
 1. You must publish data for related models.. If `book.author()` returns a model of author that doesn't have data published for it, then it will return undefined. This is just how Meteor works.
 
-For a more in depth explanation of how to use this package see [API.md](API.md)
+For a more in depth explanation of how to use this package see [API.md](api)
 
-[1]: https://github.com/aldeed/meteor-simple-schema
-[2]: https://www.discovermeteor.com/blog/allow-deny-challenge-results/#results
-[3]: https://atmospherejs.com/socialize
+[simple-schema]: https://github.com/aldeed/meteor-simple-schema
+[allow-deny]: https://www.discovermeteor.com/blog/allow-deny-challenge-results/#results
+[socialize]: https://atmospherejs.com/socialize
+[meteor]: https://meteor.com
+[api]: https://github.com/copleykj/socialize-base-model/blob/master/API.md
