@@ -17,7 +17,7 @@ Package.onUse(function onUse(api) {
 
     api.use([
         'aldeed:collection2@3.0.2', 'aldeed:schema-index@3.0.0', 'aldeed:schema-deny@3.0.0',
-        'matb33:collection-hooks@1.0.0', 'socialize:server-time@1.0.0',
+        'matb33:collection-hooks@1.0.1', 'socialize:server-time@1.0.0',
     ]);
 
     api.imply(['meteor', 'mongo', 'ecmascript']);
