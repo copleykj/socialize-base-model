@@ -11,7 +11,7 @@ Npm.depends({
 });
 
 Package.onUse(function onUse(api) {
-    api.versionsFrom('1.3');
+    api.versionsFrom('1.8.3');
 
     api.use(['meteor', 'mongo', 'ecmascript']);
 
