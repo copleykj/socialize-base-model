@@ -16,7 +16,7 @@ Package.onUse(function onUse(api) {
     api.use(['meteor', 'mongo', 'ecmascript']);
 
     api.use([
-        'aldeed:collection2@3.0.5', 'aldeed:schema-index@3.0.0', 'aldeed:schema-deny@3.0.0',
+        'aldeed:collection2@3.0.6', 'aldeed:schema-index@3.0.0', 'aldeed:schema-deny@3.0.0',
         'matb33:collection-hooks@1.0.1', 'socialize:server-time@1.0.0',
     ]);
 
@@ -34,7 +34,7 @@ Package.onTest(function onTest(api) {
     api.use(['tinytest', 'meteor', 'mongo', 'ecmascript']);
 
     api.use([
-        'aldeed:collection2@3.0.5', 'matb33:collection-hooks@1.0.1',
+        'aldeed:collection2@3.0.6', 'matb33:collection-hooks@1.0.1',
         'socialize:base-model',
     ]);
 
