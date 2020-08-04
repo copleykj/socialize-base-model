@@ -23,7 +23,7 @@
     "homepage": "https://github.com/copleykj/socialize-base-model#readme",
     "dependencies": {
         "mongodb-diff": "^0.4.4",
-        "@socialize/react-native-meteor-collection2": "^1.1.0",
-        "@socialize/server-time": "^1.0.0"
+        "@socialize/react-native-meteor-collection2": "^1.1.1",
+        "@socialize/server-time": "^1.0.1"
     }
 }
