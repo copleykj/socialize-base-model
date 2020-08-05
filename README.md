@@ -4,37 +4,34 @@ This package provides an extensible, yet opinionated, base from which to build y
 
 >This is a [Meteor][meteor] package with part of it's code published as a companion NPM package made to work with React Native. This allows your Meteor and React Native projects that use this package to share code between them to give you a competitive advantage when bringing your mobile and web application to market.
 
-- [Base Model](#base-model)
-    - [Supporting the Project](#supporting-the-project)
-    - [Meteor Installation](#meteor-installation)
-    - [React Native Installation](#react-native-installation)
-    - [Basic Usage](#basic-usage)
-    - [Caveats](#caveats)
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+- [Supporting The Project](#supporting-the-project)
+- [Meteor Installation](#meteor-installation)
+- [React Native Installation](#react-native-installation)
+- [Basic Usage](#basic-usage)
+- [Caveats](#caveats)
+<!-- /TOC -->
 
+## Supporting The Project
 
-## Supporting the Project
-In the spirit of keeping this and all of the packages in the [Socialize][socialize] set alive, I ask that if you find this package useful, please donate to it's development.
-
-![Litecoin](http://gdurl.com/xnOe)
-
-[Patreon](https://www.patreon.com/user?u=4866588) / [Paypal](https://www.paypal.me/copleykj)
+Finding the time to maintain FOSS projects can be quite difficult. I am myself responsible for over 30 personal projects across 2 platforms, as well as Multiple others maintained by the [Meteor Community Packages](https://github.com/meteor-community-packages) organization. Therfore, if you appreciate my work, I ask that you either sponsor my work through GitHub, or donate via Paypal or Patreon. Every dollar helps give cause for spending my free time fielding issues, feature requests, pull requests and releasing updates. Info can be found in the "Sponsor this project" section of the [GitHub Repo](https://github.com/copleykj/socialize-base-model)
 
 ## Meteor Installation
 
 ```sh
-$ meteor install socialize:base-model
-$ meteor npm install --save simpl-schema
+meteor install socialize:base-model
+meteor npm install --save simpl-schema
 ```
 
 ## React Native Installation
 
 ```sh
-$ npm install --save @socialize/base-model react-native-meteor-collection2
+npm install --save @socialize/base-model react-native-meteor-collection2
 ```
 
 > **Note**
 >
->  When using with React Native, you'll need to connect to a server which hosts the server side Meteor code for your app using `Meteor.connect` as per the [@socialize/react-native-meteor](https://www.npmjs.com/package/@socialize/react-native-meteor#example-usage) documentation.
+>When using with React Native, you'll need to connect to a server which hosts the server side Meteor code for your app using `Meteor.connect` as per the [@socialize/react-native-meteor](https://www.npmjs.com/package/@socialize/react-native-meteor#example-usage) documentation.
 
  ```javascript
 Meteor.connect('ws://192.168.X.X:3000/websocket');
@@ -156,7 +153,6 @@ Let's examine what we have done here.
 5. Attach the collection to the `Book` class enabling instances of the class to execute save/update/remove operations
 6. Specify allow rules for the collection as a final layer of security thus allowing total client side manipulation.
 
-
 Now we are all set up to use the new `Book` class, and since we've properly secured our database writes through a combination of [SimpleSchema][simple-schema] and allow rules, we can now do all of our database operations using client side database methods.
 
 >**Don't believe client side only database is possible?** Check the [results][allow-deny] of Discover Meteor's allow/deny security challenge and take note that it mentions issues with other submissions, but you'll only find *Kelly Copley* listed under people who got it right. Guess how I secured my solution ;-).
@@ -176,6 +172,7 @@ var book = new Book({
 
 book.save(); //This will also clean the data before inserting so no garbage data gets through.
 ```
+
 We do this with code (dev tools? :-P ), but you could use a form and template events, OR you could define necessary information on your `SimpleSchema` and use `aldeed:autoform` or `vazco:uniforms` to render a form to input this information.
 
 Now that we have data in the database we can read it out, display it, and use the methods defined on the class as helpers. Assuming we have a template with a helper that returns a cursor from `Meteor.books`, we can iterate over the cursor and the context will be an instance of the `Book` class and we can call the methods of the class such as `fullTitle`, and `author`. Awesomely, since we've also returned a instance of the `Author` class from the `author` method, we can also call it's methods as well such as `author.fullName` which could concatenate the authors first and last name and return a single string.
@@ -187,7 +184,9 @@ Now that we have data in the database we can read it out, display it, and use th
     <p>{{fullTitle}}</p>
 {{/each}}
 ```
+
 This would yield HTML like so..
+
 ```html
 <h1>Book List</h1>
 <p>Author's Name: Dave Pilkey<p>
@@ -195,6 +194,7 @@ This would yield HTML like so..
 ```
 
 ## Caveats
+
 There could be some things that I guess might not be so obvious. I'll try to list them here as they come up.
 
 1. You must publish data for related models.. If `book.author()` returns a model of author that doesn't have data published for it, then it will return undefined. This is just how Meteor works.

@@ -25,5 +25,19 @@
         "mongodb-diff": "^0.4.4",
         "@socialize/react-native-meteor-collection2": "^1.1.1",
         "@socialize/server-time": "^1.0.1"
-    }
+    },
+    "funding": [
+      {
+        "type" : "github",
+        "url" : "https://github.com/sponsors/copleykj"
+      },
+      {
+        "type" : "patreon",
+        "url" : "https://www.patreon.com/copleykj"
+      },
+      {
+        "type" : "paypal",
+        "url" : "https://www.paypal.me/copleykj"
+      }
+    ]
 }
