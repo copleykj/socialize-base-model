@@ -32,8 +32,8 @@ export default (Meteor) => {
         return undefined;
     };
 
-    function extend(reciever, provider) {
-        const rec = reciever;
+    function extend(receiver, provider) {
+        const rec = receiver;
         for (const prop in provider) {
             if (prop in provider) {
                 rec[prop] = provider[prop];
