@@ -13,7 +13,8 @@
     },
     "keywords": [
         "meteor",
-        "react-native"
+        "react-native",
+        "socialize"
     ],
     "author": "Kelly Copley <copleykj@gmail.com>",
     "license": "MIT",
