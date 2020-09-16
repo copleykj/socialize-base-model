@@ -45,7 +45,7 @@ export default (Meteor) => {
         constructor(document = {}, preClean) {
             let doc = document;
             if (preClean) {
-                doc = this._getSchema().clean(doc);
+                doc = this._getSchema(doc).clean(doc);
             }
             extend(this, doc);
             this.getDocument = function getDocument() {
@@ -103,8 +103,8 @@ export default (Meteor) => {
             this.attachSchema(new SimpleSchema(schemaObject));
         }
 
-        _getSchema() {
-            const schema = Meteor._get(this.getCollection(), '_c2', '_simpleSchema');
+        _getSchema(...args) {
+            const schema = this.getCollection().simpleSchema(...args);
             if (schema) {
                 return schema;
             }
@@ -123,13 +123,15 @@ export default (Meteor) => {
 
         // get all values from the model that do not have a denyUpdate or denyUntrusted in their schema
         getUpdatableFields() {
-            const schema = this._getSchema()._schema;
+            const schemas = Meteor._get(this.getCollection(), '_c2', '_simpleSchemas')
             const fields = { _id: this._id };
 
             for (const key of Object.keys(this)) {
-                if (schema[key] && !(schema[key].custom && schema[key].custom === SimpleSchema.denyUntrusted) && !schema[key].denyUpdate) {
-                    fields[key] = this[key];
-                }
+                schemas.forEach(({ schema }) => {
+                    if (schema[key] && !(schema[key].custom && schema[key].custom === SimpleSchema.denyUntrusted) && !schema[key].denyUpdate) {
+                        fields[key] = this[key];
+                    }
+                })
             }
 
             return fields;
@@ -140,7 +142,6 @@ export default (Meteor) => {
         }
 
         save(callback) {
-            const schema = this._getSchema();
 
             let obj = Object.keys(this).reduce(
                 (accumulator, key) => {
@@ -157,6 +158,7 @@ export default (Meteor) => {
                     callback && callback(null);
                 }
             } else {
+                const schema = this._getSchema(obj);
                 if (Meteor.isClient && schema) {
                     obj = schema.clean(obj, {
                         extendAutoValueContext: {
