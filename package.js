@@ -2,7 +2,7 @@
 Package.describe({
     name: 'socialize:base-model',
     summary: 'A model for all other models to extend.',
-    version: '1.1.5',
+    version: '1.1.6',
     git: 'https://github.com/copleykj/socialize-base-model.git',
 });
 
