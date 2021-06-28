@@ -23,7 +23,7 @@ export default (Meteor) => {
     SimpleSchema.denyUntrusted = function denyUntrusted() {
         if (this.isSet) {
             const autoValue = this.definition.autoValue && this.definition.autoValue.call(this);
-            const defaultValue = this.definition.defaultValue;
+            const { defaultValue } = this.definition;
 
             if (this.value !== defaultValue && this.value !== autoValue && !this.isFromTrustedCode) {
                 return 'Untrusted';
@@ -61,7 +61,7 @@ export default (Meteor) => {
             const self = this;
             if ((typeof methodMap === 'function' || typeof methodMap === 'object') && !!methodMap) {
                 const keys = Object.keys(methodMap);
-                for (let i = 0, length = keys.length; i < length; i++) {
+                for (let i = 0, { length } = keys; i < length; i++) {
                     const method = methodMap[keys[i]];
 
                     if (typeof method === 'function') {
@@ -116,14 +116,13 @@ export default (Meteor) => {
             if (this) throw new Meteor.Error('noCollection', 'You must use ClassName.attachCollection to attach a collection to your model.');
         }
 
-
         getCollectionName() {
             return this.getCollection()._name;
         }
 
         // get all values from the model that do not have a denyUpdate or denyUntrusted in their schema
         getUpdatableFields() {
-            const schemas = Meteor._get(this.getCollection(), '_c2', '_simpleSchemas')
+            const schemas = Meteor._get(this.getCollection(), '_c2', '_simpleSchemas');
             const fields = { _id: this._id };
 
             for (const key of Object.keys(this)) {
@@ -131,7 +130,7 @@ export default (Meteor) => {
                     if (schema[key] && !(schema[key].custom && schema[key].custom === SimpleSchema.denyUntrusted) && !schema[key].denyUpdate) {
                         fields[key] = this[key];
                     }
-                })
+                });
             }
 
             return fields;
@@ -142,7 +141,6 @@ export default (Meteor) => {
         }
 
         save(callback) {
-
             let obj = Object.keys(this).reduce(
                 (accumulator, key) => {
                     if (key !== 'getDocument') accumulator[key] = this[key]; // eslint-disable-line no-param-reassign
