@@ -11,13 +11,13 @@ Npm.depends({
 });
 
 Package.onUse(function onUse(api) {
-    api.versionsFrom('2.3');
+    api.versionsFrom(['1.10.2', '2.3']);
 
     api.use(['meteor', 'mongo', 'ecmascript']);
 
     api.use([
         'aldeed:collection2@3.4.1', 'aldeed:schema-index@3.0.0', 'aldeed:schema-deny@3.0.0',
-        'matb33:collection-hooks@1.1.0', 'socialize:server-time@1.0.2',
+        'matb33:collection-hooks@1.1.0', 'socialize:server-time@1.0.3',
     ]);
 
     api.imply(['meteor', 'mongo', 'ecmascript']);
