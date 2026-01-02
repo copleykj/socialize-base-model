@@ -1,6 +1,8 @@
 # Base Model
 
-This package provides an extensible, yet opinionated, base from which to build your models. It uses simpl-schema for data integrity, allow/deny for simple security, and collection-hooks for actions that need to be completed before or after CRUD operations complete. The [Socialize][socialize] package set is built upon this package.
+This package provides an extensible, yet opinionated, base from which to build your models. It uses SimpleSchema for data integrity, allow/deny for simple security, and collection-hooks for actions that need to be completed before or after CRUD operations complete. The [Socialize][socialize] package set is built upon this package.
+
+> **Meteor 3.0**: Version 2.0.0+ of this package is compatible with Meteor 3.0 and uses async/await for all database operations. For Meteor 2.x, use version 1.x of this package.
 
 >This is a [Meteor][meteor] package with part of it's code published as a companion NPM package made to work with clients other than Meteor. For example your server is Meteor, but you want to build a React Native app for the client. This allows you to share code between your Meteor server and other clients to give you a competitive advantage when bringing your mobile and web application to market.
 
@@ -21,9 +23,10 @@ Finding the time to maintain FOSS projects can be quite difficult. I am myself r
 ## Meteor Installation
 
 ```sh
-meteor install socialize:base-model
-meteor npm install --save simpl-schema
+meteor add socialize:base-model
 ```
+
+> Note: This package now uses `aldeed:simple-schema` (Meteor package) instead of `simpl-schema` (npm). The schema package is automatically included as a dependency.
 
 ## NPM Installation
 
@@ -67,9 +70,16 @@ import Collection from 'react-native-meteor-collection2';
 
 ```javascript
 
-// Both Meteor and React Native
-import SimpleSchema from 'simpl-schema';
+// For Meteor - SimpleSchema is re-exported from socialize:base-model
+import { BaseModel, SimpleSchema } from 'meteor/socialize:base-model';
+```
 
+```javascript
+// For React Native - still use npm package
+import SimpleSchema from 'simpl-schema';
+```
+
+```javascript
 //We assume that another model of an Author exists so we can import its collection here..
 import { AuthorsCollection }  from "/models/Author";
 
@@ -169,16 +179,17 @@ With this in mind, lets insert a book in to the database client side.
 
 ```javascript
 //first we get get an Author for the book we want to insert
-var author = Meteor.authors.findOne({firstName:"Dave", lastName:"Pilkey"});
+const author = await AuthorsCollection.findOneAsync({firstName:"Dave", lastName:"Pilkey"});
 
-var book = new Book({
+const book = new Book({
     title: "Captain Underpants",
     subTitle: "and The Sensational Saga of Sir-Stinks-A-Lot",
     authorId: author._id,
     garbageKey: "Stripped By SimpleSchema.clean() when calling save()"
 });
 
-book.save(); //This will also clean the data before inserting so no garbage data gets through.
+// Meteor 3.0: save() is now async
+await book.save(); //This will also clean the data before inserting so no garbage data gets through.
 ```
 
 We do this with code (dev tools? :-P ), but you could use a form and template events, OR you could define necessary information on your `SimpleSchema` and use `aldeed:autoform` or `vazco:uniforms` to render a form to input this information.
