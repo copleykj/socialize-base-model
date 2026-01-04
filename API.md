@@ -1,5 +1,7 @@
 ## BaseModel (class) ##
 
+> **Meteor 3.0**: All database operations (`save`, `update`, `remove`) are now async and return Promises. You must use `await` or `.then()` when calling these methods.
+
 ### Instance Methods ###
 
 Instance methods are helper functions available on the instances returned from `find` and `findOne` queries. BaseModel provides some that are inherited in the extend process.
@@ -7,47 +9,51 @@ Instance methods are helper functions available on the instances returned from `
 __checkOwnership__ - Check to make sure the userId property is equal to the \_id of the currently logged in user.
 
 ```javascript
-var myBook = Meteor.books.findOne();
+const myBook = await BooksCollection.findOneAsync();
 if(myBook.checkOwnership()){
-    mybook.remove();
+    await myBook.remove();
 }
 ```
 
-__save__ - Save instance to the database. If the instance was not previously saved to the database this will perform an insert. Otherwise it will diff the changes and update the database using a $set and update.
+__save__ *(async)* - Save instance to the database. If the instance was not previously saved to the database this will perform an insert. Otherwise it will diff the changes and update the database using a $set and update.
 
 ```javascript
-var book = Meteor.books.findOne();
+const book = await BooksCollection.findOneAsync();
 
 book.title = 'To Kill a Mockingbird';
 
-book.save();
+await book.save();
 ```
 
-__update(modifier)__ - Update the record for the instance making changes specified by the modifier. In most cases it'll be easier to use `save` but this is here if needed.
+__update(modifier)__ *(async)* - Update the record for the instance making changes specified by the modifier. In most cases it'll be easier to use `save` but this is here if needed.
 
 ```javascript
-Meteor.books.findOne().update({
+const book = await BooksCollection.findOneAsync();
+await book.update({
     $set: { title:'Meteor For Dummies' }
 });
 ```
 
-__remove__ - Delete the database record for the instance.
+__remove__ *(async)* - Delete the database record for the instance.
 
 ```javascript
-Meteor.books.findOne().remove();
+const book = await BooksCollection.findOneAsync();
+await book.remove();
 ```
 
 __getCollection__ - returns a reference to the underlying collection for the class.
 
 ```javascript
-Meteor.books.findOne().getCollection();
+const book = await BooksCollection.findOneAsync();
+book.getCollection(); // returns BooksCollection
 ```
 
 
 __getCollectionName__ - returns a string specifying the name given to the collection when it was instantiated.
 
 ```javascript
-Meteor.books.findOne().getCollectionName(); //-> 'books'
+const book = await BooksCollection.findOneAsync();
+book.getCollectionName(); //-> 'books'
 ```
 
 __getUpdatableFields()__ - returns an object of values for all fields on the model that are allowed to be updated. This is particularly useful for passing to `vazco:uniforms`
@@ -60,9 +66,12 @@ __attachCollection(Mongo.Collection)__ - Attach the collection to the model so t
 Author.attachCollection(AuthorsCollection);
 ```
 
-__attachSchema(SchemaInstance)__ - Attach a schema to the currently attached collection or add to the schema if one already exists. `SchemaInstance` is an instance of `SimpleSchema`.
+__attachSchema(SchemaInstance)__ - Attach a schema to the currently attached collection or add to the schema if one already exists. `SchemaInstance` is an instance of `SimpleSchema` (from `meteor/aldeed:simple-schema`).
 
 ```javascript
+// SimpleSchema is re-exported from socialize:base-model
+import { SimpleSchema } from 'meteor/socialize:base-model';
+
 Author.attachSchema(new SimpleSchema({
     firstName: {
         type: String,
