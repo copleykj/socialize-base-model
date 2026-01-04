@@ -2,28 +2,29 @@
 Package.describe({
     name: 'socialize:base-model',
     summary: 'A model for all other models to extend.',
-    version: '1.1.7',
+    version: '2.0.0',
     git: 'https://github.com/copleykj/socialize-base-model.git',
 });
 
 Npm.depends({
     'mongodb-diff': '0.4.4',
+    'message-box': '0.2.7',
 });
 
 Package.onUse(function onUse(api) {
-    api.versionsFrom(['1.10.2', '2.3']);
+    api.versionsFrom('3.0');
 
     api.use(['meteor', 'mongo', 'ecmascript']);
 
     api.use([
-        'aldeed:collection2@3.4.1', 'aldeed:schema-index@3.0.0', 'aldeed:schema-deny@3.0.0',
-        'matb33:collection-hooks@1.1.0', 'socialize:server-time@1.0.3',
+        'aldeed:collection2@4.1.5', 'aldeed:schema-deny@5.0.0',
+        'matb33:collection-hooks@2.1.0-beta.5', 'socialize:server-time@1.0.3',
     ]);
 
     api.imply(['meteor', 'mongo', 'ecmascript']);
 
     api.imply([
-        'aldeed:collection2', 'aldeed:schema-index', 'aldeed:schema-deny',
+        'aldeed:collection2', 'aldeed:schema-deny',
         'matb33:collection-hooks', 'socialize:server-time',
     ]);
 
@@ -34,7 +35,7 @@ Package.onTest(function onTest(api) {
     api.use(['tinytest', 'meteor', 'mongo', 'ecmascript']);
 
     api.use([
-        'aldeed:collection2@3.0.6', 'matb33:collection-hooks@1.0.1',
+        'aldeed:collection2@4.0.1', 'matb33:collection-hooks@2.0.0',
         'socialize:base-model',
     ]);
 

@@ -1,10 +1,9 @@
 /* eslint-disable import/no-unresolved */
-import SimpleSchema from 'simpl-schema';
 import MessageBox from 'message-box';
 import { diff } from 'mongodb-diff';
 /* eslint-enable import/no-unresolved */
 
-export default (Meteor) => {
+export default (Meteor, SimpleSchema) => {
     /* We check for server code here to deal with a buffer issue in meteor-message-box
      * This shouldn't be a major issue as I doubt we will need to display this error
      * on the client at this point. Should be fixed though.
@@ -122,7 +121,8 @@ export default (Meteor) => {
 
         // get all values from the model that do not have a denyUpdate or denyUntrusted in their schema
         getUpdatableFields() {
-            const schemas = Meteor._get(this.getCollection(), '_c2', '_simpleSchemas');
+            const collection = this.getCollection();
+            const schemas = collection?._c2?._simpleSchemas || [];
             const fields = { _id: this._id };
 
             for (const key of Object.keys(this)) {
@@ -140,7 +140,7 @@ export default (Meteor) => {
             return this.userId === Meteor.userId();
         }
 
-        save(callback) {
+        async save() {
             let obj = Object.keys(this).reduce(
                 (accumulator, key) => {
                     if (key !== 'getDocument') accumulator[key] = this[key]; // eslint-disable-line no-param-reassign
@@ -151,9 +151,7 @@ export default (Meteor) => {
             if (this._id) {
                 const updateDiff = diff(this.getDocument(), obj);
                 if (updateDiff && Object.keys(updateDiff).length !== 0) {
-                    this.update(updateDiff, callback);
-                } else {
-                    callback && callback(null);
+                    await this.update(updateDiff);
                 }
             } else {
                 const schema = this._getSchema(obj);
@@ -165,21 +163,21 @@ export default (Meteor) => {
                         },
                     });
                 }
-                this._id = this.getCollection().insert(obj, callback);
+                this._id = await this.getCollection().insertAsync(obj);
             }
 
             return this;
         }
 
-        update(modifier, callback) {
+        async update(modifier) {
             if (this._id) {
-                this.getCollection().update(this._id, modifier, callback);
+                await this.getCollection().updateAsync(this._id, modifier);
             }
         }
 
-        remove(callback) {
+        async remove() {
             if (this._id) {
-                this.getCollection().remove({ _id: this._id }, callback);
+                await this.getCollection().removeAsync({ _id: this._id });
             }
         }
     };
