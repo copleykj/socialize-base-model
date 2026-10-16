@@ -1,6 +1,9 @@
 /* eslint-disable import/no-unresolved */
 import MessageBox from 'message-box';
-import { diff } from 'mongodb-diff';
+import { diff } from '@freedombase/mongodb-diff';
+// collection2 only adds Collection#attachSchema once its static entry has run; the default
+// entry is lazy, so a model defined before the app imports it would find no attachSchema.
+import 'meteor/aldeed:collection2/static';
 /* eslint-enable import/no-unresolved */
 
 export default (Meteor, SimpleSchema) => {
@@ -156,7 +159,8 @@ export default (Meteor, SimpleSchema) => {
             } else {
                 const schema = this._getSchema(obj);
                 if (Meteor.isClient && schema) {
-                    obj = schema.clean(obj, {
+                    // simple-schema 3 cleans asynchronously; awaiting a plain object is a no-op on 2.
+                    obj = await schema.clean(obj, {
                         extendAutoValueContext: {
                             isInsert: true,
                             userId: Meteor.userId(),
@@ -167,6 +171,11 @@ export default (Meteor, SimpleSchema) => {
             }
 
             return this;
+        }
+
+        // Alias kept for code written against the Meteor 3 betas, where save() was still sync.
+        saveAsync() {
+            return this.save();
         }
 
         async update(modifier) {

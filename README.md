@@ -3,6 +3,8 @@
 This package provides an extensible, yet opinionated, base from which to build your models. It uses SimpleSchema for data integrity, allow/deny for simple security, and collection-hooks for actions that need to be completed before or after CRUD operations complete. The [Socialize][socialize] package set is built upon this package.
 
 > **Meteor 3.0**: Version 2.0.0+ of this package is compatible with Meteor 3.0 and uses async/await for all database operations. For Meteor 2.x, use version 1.x of this package.
+>
+> Version 2.1.0 also works with `aldeed:collection2` 5 and `aldeed:simple-schema` 3. The `preClean` constructor flag needs a synchronous `clean`, so it only works with simple-schema 2.
 
 >This is a [Meteor][meteor] package with part of it's code published as a companion NPM package made to work with clients other than Meteor. For example your server is Meteor, but you want to build a React Native app for the client. This allows you to share code between your Meteor server and other clients to give you a competitive advantage when bringing your mobile and web application to market.
 

@@ -1,6 +1,7 @@
 /* eslint-disable import/no-unresolved */
 import { Tinytest } from 'meteor/tinytest';
 import { BaseModel, SimpleSchema } from 'meteor/socialize:base-model';
+import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 
 const collection = new Mongo.Collection('tests');
@@ -44,3 +45,21 @@ Tinytest.add('BaseModel Collection Tests', (test) => {
     // Should now get an instace of SimpleSchema from _getSchema
     test.instanceOf(model._getSchema(), SimpleSchema);
 });
+
+if (Meteor.isServer) {
+    Tinytest.addAsync('BaseModel save/update/remove round trip', async (test) => {
+        const saved = await new BaseModel({ test: 'first' }).save();
+        test.isTrue(!!saved._id);
+
+        const found = await collection.findOneAsync(saved._id);
+        test.instanceOf(found, BaseModel);
+        test.equal(found.test, 'first');
+
+        found.test = 'second';
+        await found.save();
+        test.equal((await collection.findOneAsync(saved._id)).test, 'second');
+
+        await found.remove();
+        test.isUndefined(await collection.findOneAsync(saved._id));
+    });
+}

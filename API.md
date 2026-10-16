@@ -25,6 +25,8 @@ book.title = 'To Kill a Mockingbird';
 await book.save();
 ```
 
+__saveAsync__ *(async)* - Alias of `save`, kept for code written against the Meteor 3 betas.
+
 __update(modifier)__ *(async)* - Update the record for the instance making changes specified by the modifier. In most cases it'll be easier to use `save` but this is here if needed.
 
 ```javascript
